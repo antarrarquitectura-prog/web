@@ -16,6 +16,46 @@
       "source": "/contacto",
       "destination": "/#contacto",
       "permanent": true
+    },
+    {
+      "source": "/proyectos/residencial",
+      "destination": "/proyectos#residencial",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/comercial",
+      "destination": "/proyectos#comercial",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/interiores",
+      "destination": "/proyectos#interiores",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/diseno-de-interiores",
+      "destination": "/proyectos#interiores",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/residencial/:slug",
+      "destination": "/proyectos/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/comercial/:slug",
+      "destination": "/proyectos/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/interiores/:slug",
+      "destination": "/proyectos/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/diseno-de-interiores/:slug",
+      "destination": "/proyectos/:slug",
+      "permanent": true
     }
   ],
   "headers": [
