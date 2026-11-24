@@ -1,0 +1,276 @@
+---
+import { PROJECTS, type Project } from '../data/projects';
+---
+
+<!-- Global Interactive Project Modal: Monolithic Editorial Architecture Experience -->
+<div 
+  id="project-modal" 
+  class="fixed inset-0 z-[100] hidden flex-col justify-between p-4 sm:p-6 md:p-8 select-none transition-opacity duration-300 overflow-hidden"
+  style="background-color: #F6F3EE; background-image: url('/assets/textura-piedra.jpg'); background-repeat: repeat; background-size: 380px auto; background-position: left top;"
+  aria-modal="true"
+  role="dialog"
+  tabindex="-1"
+  data-lenis-prevent
+  oncontextmenu="return false;"
+>
+  <!-- Velo editorial sutil para homogeneizar con la textura caliza del sitio -->
+  <div class="absolute inset-0 bg-[#FAF8F5]/15 pointer-events-none z-0" aria-hidden="true"></div>
+
+  <!-- Top Bar: Dintel de Travertino Claro Homologado a la Barra Superior -->
+  <header class="modal-travertino-header relative z-30 flex items-center justify-between gap-4 px-4 sm:px-6 md:px-8 py-3.5 sm:py-4 -mx-4 -mt-4 sm:-mx-6 sm:-mt-6 md:-mx-8 md:-mt-8 shadow-[0_4px_20px_-2px_rgba(35,25,18,0.20)]">
+    <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+      <div id="modal-title" role="heading" aria-level="2" class="text-[#1F1A14] font-display text-lg sm:text-xl md:text-2xl tracking-tight font-normal">
+        Casa Valencia
+      </div>
+      <span class="hidden sm:inline text-[#864728]/50 font-bold">&middot;</span>
+      <p id="modal-location" class="font-tech text-xs tracking-wider uppercase text-[#864728] font-bold">
+        Chepén, La Libertad
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2.5 sm:gap-4">
+      <a 
+        id="modal-full-page-link"
+        href="/proyectos/casa-valencia"
+        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] bg-white/70 hover:bg-[#864728] text-[#864728] hover:text-white border border-[#bfae9b]/60 hover:border-[#864728] font-tech text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 shadow-sm"
+        title="Ver ficha técnica completa de la obra"
+      >
+        <span>Ficha Completa</span>
+        <span class="text-xs">&nearr;</span>
+      </a>
+      <div class="inline-flex items-center px-2.5 py-1 rounded-[2px] bg-white/50 border border-[#bfae9b]/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+        <span id="modal-image-counter" class="font-tech text-xs text-[#4A3E31] tracking-widest font-bold">
+          1 / 1
+        </span>
+      </div>
+      <button 
+        id="close-modal-btn"
+        type="button" 
+        class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-[2px] bg-[#231B12]/8 hover:bg-[#864728] border border-[#231B12]/15 hover:border-[#864728] text-[#1F1A14] hover:text-white text-xl leading-none transition-all duration-200 cursor-pointer focus:outline-none shadow-sm"
+        aria-label="Cerrar visor"
+      >
+        &times;
+      </button>
+    </div>
+  </header>
+
+  <!-- Center: Natural Floating Image Viewport with Invisible Lateral Click Zones -->
+  <main class="relative z-10 flex-1 flex items-center justify-center w-full my-auto overflow-hidden py-3 sm:py-4">
+    
+    <!-- Zona Lateral Izquierda Invisible (Click to Prev) con Flecha Sutil en Hover -->
+    <div 
+      id="modal-zone-prev" 
+      class="absolute left-0 top-0 w-1/2 h-full z-20 cursor-zone-prev flex items-center justify-start pl-3 sm:pl-6 group/prev" 
+      title="Ver imagen anterior"
+      aria-label="Imagen anterior"
+    >
+      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-[2px] bg-[#231B12]/80 hover:bg-[#864728] text-white flex items-center justify-center border border-white/30 opacity-0 group-hover/prev:opacity-95 transition-all shadow-lg backdrop-blur-sm">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Imagen Principal: Flotante, limpia y centrada en su proporción natural con sombra de gravedad -->
+    <img 
+      id="modal-main-img" 
+      src="" 
+      alt="Visualización arquitectónica" 
+      class="max-h-[72vh] sm:max-h-[76vh] md:max-h-[78vh] max-w-[92vw] sm:max-w-[88vw] w-auto h-auto object-contain mx-auto rounded-[3px] border border-white/90 shadow-[0_20px_50px_-12px_rgba(35,28,20,0.30),0_8px_20px_-4px_rgba(35,28,20,0.18)] transition-opacity duration-300 z-10 select-none pointer-events-none block"
+      draggable="false"
+    />
+
+    <!-- Zona Lateral Derecha Invisible (Click to Next) con Flecha Sutil en Hover -->
+    <div 
+      id="modal-zone-next" 
+      class="absolute right-0 top-0 w-1/2 h-full z-20 cursor-zone-next flex items-center justify-end pr-3 sm:pr-6 group/next" 
+      title="Ver imagen siguiente"
+      aria-label="Imagen siguiente"
+    >
+      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-[2px] bg-[#231B12]/80 hover:bg-[#864728] text-white flex items-center justify-center border border-white/30 opacity-0 group-hover/next:opacity-95 transition-all shadow-lg backdrop-blur-sm">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Bar: Minimalist Information & Subtle Consultation Link -->
+  <footer class="relative z-30 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#231B12]/12 pt-3 text-xs -mb-1">
+    <div class="flex items-center gap-3 text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px] font-semibold">
+      <span id="modal-typology">Viviendas unifamiliares</span>
+      <span id="modal-meta-sep" class="text-[#864728]/50 font-bold">&middot;</span>
+      <span id="modal-area">185 m²</span>
+    </div>
+
+    <a 
+      id="modal-cta-whatsapp"
+      href="https://wa.me/51926542501"
+      target="_blank"
+      rel="noopener"
+      class="inline-flex items-center gap-1.5 text-[#864728] hover:text-[#5c2e17] font-tech text-xs tracking-widest uppercase font-bold group transition-colors cursor-pointer"
+    >
+      <span>Consultar este proyecto</span>
+      <span class="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">&nearr;</span>
+    </a>
+  </footer>
+</div>
+
+<style>
+  .modal-travertino-header {
+    background-color: #E2D8C9;
+    background-image: url('/assets/navbar-travertino.jpg');
+    background-size: 850px auto;
+    background-repeat: repeat-x;
+    background-position: center center;
+    border-bottom: 1px solid rgba(120, 105, 90, 0.30);
+  }
+
+  .cursor-zone-prev {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='%231F1A14' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 12H5M12 19l-7-7 7-7'/%3E%3C/svg%3E") 18 18, pointer;
+  }
+  .cursor-zone-next {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='%231F1A14' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M12 5l7 7-7 7'/%3E%3C/svg%3E") 18 18, pointer;
+  }
+</style>
+
+<script>
+  import { PROJECTS, type Project } from '../data/projects';
+
+  let currentProject: Project | null = null;
+  let currentImageIndex = 0;
+
+  const modal = document.getElementById('project-modal');
+  const closeBtn = document.getElementById('close-modal-btn');
+  const titleEl = document.getElementById('modal-title');
+  const locationEl = document.getElementById('modal-location');
+  const typologyEl = document.getElementById('modal-typology');
+  const areaEl = document.getElementById('modal-area');
+  const mainImg = document.getElementById('modal-main-img') as HTMLImageElement;
+  const counterEl = document.getElementById('modal-image-counter');
+  const ctaWa = document.getElementById('modal-cta-whatsapp') as HTMLAnchorElement;
+  const zonePrev = document.getElementById('modal-zone-prev');
+  const zoneNext = document.getElementById('modal-zone-next');
+
+  const openModalFn = (projectId: string) => {
+    const proj = PROJECTS.find(p => p?.id === projectId);
+    if (!proj) return;
+
+    currentProject = proj;
+    currentImageIndex = 0;
+    updateModalView();
+
+    // Pause global Lenis scroll so modal has 100% clean internal display
+    if ((window as any).lenis) {
+      (window as any).lenis.stop();
+    }
+
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+    modal?.focus();
+    document.body.classList.add('overflow-hidden');
+  };
+
+  (window as any).openProjectModal = openModalFn;
+
+  window.addEventListener('open-project-modal', ((e: CustomEvent) => {
+    if (e.detail?.projectId) {
+      openModalFn(e.detail.projectId);
+    }
+  }) as EventListener);
+
+  function updateModalView() {
+    if (!currentProject) return;
+
+    if (titleEl) titleEl.textContent = currentProject.title;
+    if (locationEl) locationEl.textContent = currentProject.location;
+    if (typologyEl) typologyEl.textContent = currentProject.typology;
+    const metaSepEl = document.getElementById('modal-meta-sep');
+    if (areaEl) {
+      if (currentProject.areaBuilt) {
+        areaEl.textContent = currentProject.areaBuilt;
+        areaEl.classList.remove('hidden');
+        metaSepEl?.classList.remove('hidden');
+      } else {
+        areaEl.textContent = '';
+        areaEl.classList.add('hidden');
+        metaSepEl?.classList.add('hidden');
+      }
+    }
+
+    const pageLinkEl = document.getElementById('modal-full-page-link') as HTMLAnchorElement;
+    if (pageLinkEl) {
+      pageLinkEl.href = `/proyectos/${currentProject.id}`;
+    }
+
+    const waText = encodeURIComponent(`Hola Antarr Arquitectos, vi en su web el proyecto ${currentProject.title} (${currentProject.location}) y me gustaría cotizar un diseño con características similares.`);
+    if (ctaWa) ctaWa.href = `https://wa.me/51926542501?text=${waText}`;
+
+    renderGallery();
+  }
+
+  function renderGallery() {
+    if (!currentProject || currentProject.gallery.length === 0) return;
+    const gallery = currentProject.gallery;
+
+    // Boundary check with wrap-around
+    if (currentImageIndex < 0) currentImageIndex = gallery.length - 1;
+    if (currentImageIndex >= gallery.length) currentImageIndex = 0;
+
+    if (mainImg) {
+      mainImg.src = gallery[currentImageIndex];
+      mainImg.alt = currentProject.galleryAlts?.[currentImageIndex] || `${currentProject.title} - Imagen ${currentImageIndex + 1}`;
+    }
+    if (counterEl) {
+      counterEl.textContent = `${currentImageIndex + 1} / ${gallery.length}`;
+    }
+  }
+
+  const navigatePrev = () => {
+    currentImageIndex--;
+    renderGallery();
+  };
+
+  const navigateNext = () => {
+    currentImageIndex++;
+    renderGallery();
+  };
+
+  zonePrev?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    navigatePrev();
+  });
+
+  zoneNext?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    navigateNext();
+  });
+
+  function closeModal() {
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+    document.body.classList.remove('overflow-hidden');
+
+    if ((window as any).lenis) {
+      (window as any).lenis.start();
+    }
+  }
+
+  closeBtn?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (modal?.classList.contains('flex')) {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') {
+        navigatePrev();
+      }
+      if (e.key === 'ArrowRight') {
+        navigateNext();
+      }
+    }
+  });
+</script>

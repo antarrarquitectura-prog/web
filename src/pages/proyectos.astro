@@ -1,0 +1,490 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ProjectModal from '../components/ProjectModal.astro';
+import { PROJECTS, type Project } from '../data/projects';
+
+// Group projects into the 3 strict typologies
+const residentialProjects = PROJECTS.filter(p => p.category === 'Residencial' || p.secondaryCategory === 'Residencial');
+const commercialProjects = PROJECTS.filter(p => p.category === 'Diseño Comercial');
+const interiorProjects = PROJECTS.filter(p => p.category === 'Diseño de Interiores');
+
+const getMarbleStyle = (index: number) => {
+  return `background-position: ${(index * 137) % 550}px ${(index * 89) % 400}px;`;
+};
+---
+
+<Layout 
+  title="Portafolio de Obras y Proyectos | Antarr Arquitectos · Residencial, Comercial e Interiores"
+  description="Explora el catálogo de obras proyectadas por Antarr Arquitectos en Chiclayo, Lambayeque, La Libertad y todo el Perú: residencias contemporáneas, espacios comerciales e interiorismo."
+  canonical="https://antarrarquitectos.com/proyectos"
+>
+  <div id="top" class="min-h-screen flex flex-col justify-between bg-transparent">
+    <Navbar />
+
+    <main class="flex-grow pt-28 sm:pt-32 pb-20 sm:pb-28 relative overflow-hidden">
+      
+      <!-- Elemento Botánico: Planta Lima (Eucalipto en Margen Derecho según Canon Antarr) -->
+      <div 
+        class="absolute right-0 top-24 z-0 pointer-events-none select-none eucalipto-breeze"
+        aria-hidden="true"
+      >
+        <img 
+          src="/assets/planta-lima.png" 
+          alt="Planta de eucalipto lima ornamental" 
+          class="w-[140px] sm:w-[190px] md:w-[260px] lg:w-[310px] xl:w-[350px] h-auto object-contain block drop-shadow-[0_12px_24px_rgba(35,28,18,0.14)] pointer-events-none"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      <!-- Page Header: Editorial & Technical -->
+      <section class="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pb-8 sm:pb-12 border-b border-carbon/10">
+        <div class="space-y-4 max-w-4xl mx-auto text-center flex flex-col items-center">
+          <div class="badge-canteria">
+            <span class="w-1.5 h-1.5 bg-clay rounded-none"></span>
+            <span class="font-tech text-xs tracking-widest uppercase font-bold">
+              • ARCHIVO DE OBRAS &middot; ANTARR ARQUITECTOS
+            </span>
+          </div>
+          <h1 class="font-display text-4xl sm:text-5xl md:text-6xl text-carbon tracking-tight font-light leading-tight text-center">
+            Obras & Desarrollos Arquitectónicos
+          </h1>
+          <p style="color: #1a1a1a !important; opacity: 1 !important;" class="max-w-3xl mx-auto leading-relaxed text-sm md:text-base font-normal my-4 text-center">
+            Explora nuestro expediente completo estructurado por tipología. Cada intervención expresa rigurosidad proyectual, honestidad matérica y confort bioclimático adaptado a su contexto.
+          </p>
+        </div>
+
+        <!-- 3 Primary Typology Tabs (Residencial active by default) con mb-12 -->
+        <div class="mt-8 sm:mt-10 flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 mx-auto mb-12">
+          <button 
+            type="button" 
+            id="tab-btn-residencial"
+            class="catalog-tab-btn active btn-terracota px-5 py-2 text-xs tracking-wider uppercase font-medium cursor-pointer transition-all duration-200"
+            data-tab="residencial"
+          >
+            Residencial
+          </button>
+          <button 
+            type="button" 
+            id="tab-btn-comercial"
+            class="catalog-tab-btn bg-[#EAE3D8] hover:bg-[#E2D9CC] text-[#3D3328] rounded-[2px] px-5 py-2 text-xs tracking-wider uppercase font-medium border border-[#D5CABE] shadow-[inset_0_1px_1px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200"
+            data-tab="comercial"
+          >
+            Comercial
+          </button>
+          <button 
+            type="button" 
+            id="tab-btn-interiores"
+            class="catalog-tab-btn bg-[#EAE3D8] hover:bg-[#E2D9CC] text-[#3D3328] rounded-[2px] px-5 py-2 text-xs tracking-wider uppercase font-medium border border-[#D5CABE] shadow-[inset_0_1px_1px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200"
+            data-tab="interiores"
+          >
+            Diseño de Interiores
+          </button>
+        </div>
+      </section>
+
+      <!-- Projects Dossier Section -->
+      <section id="catalogo" style="scroll-margin-top: 90px;" class="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pt-10 sm:pt-14">
+        
+        <!-- Tab Content: Residencial -->
+        <div id="catalog-panel-residencial" class="catalog-panel grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+          <h2 class="sr-only">Arquitectura Residencial y Casas de Autor en Perú</h2>
+          {residentialProjects.map((project, cardIndex) => {
+            const previewImages = project.gallery.slice(0, 3);
+            return (
+              <article 
+                class="catalog-card group flex flex-col cursor-pointer"
+                data-project-id={project.id}
+              >
+                <!-- Render a sangre en la parte superior sin bordes laterales ni superior -->
+                <div 
+                  class="crossfade-container relative w-full aspect-[4/5] overflow-hidden rounded-t-[3px] bg-[#1c1c15] shadow-sm mb-[-1px]"
+                  data-card-index={cardIndex}
+                >
+                  {previewImages.map((imgSrc, imgIdx) => (
+                    <img 
+                      src={imgSrc} 
+                      alt={`${project.typology || project.category} - ${project.title} en ${project.location} | Antarr Arquitectos - Vista ${imgIdx + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                      width="800"
+                      height="1000"
+                      class={`crossfade-img absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-105 ${imgIdx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                      style={imgIdx === 0 ? "opacity: 1 !important; display: block !important;" : "display: block !important;"}
+                      data-img-index={imgIdx}
+                    />
+                  ))}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none"></div>
+                </div>
+
+                <!-- Zócalo Inferior de Mármol con Información Técnica & Botón Descúbrelo -->
+                <div 
+                  class="project-info-plaque relative z-10 flex-1 flex items-baseline justify-between gap-4"
+                  style={getMarbleStyle(cardIndex)}
+                >
+                  <div>
+                    <h3 class="font-tech text-xs tracking-widest uppercase text-[#1C1C15] font-bold">
+                      {project.title} / {project.location}
+                    </h3>
+                    <p class="font-sans text-[11px] text-[#2D2D23]/85 mt-0.5 font-normal">
+                      {project.areaBuilt ? `${project.typology} · ${project.areaBuilt}` : project.typology}
+                    </p>
+                  </div>
+                  
+                  <a 
+                    href={`/proyectos/${project.id}`}
+                    class="open-modal-trigger font-tech text-xs tracking-widest uppercase text-clay group-hover:text-ochre transition-colors font-bold flex items-center gap-1.5 cursor-pointer whitespace-nowrap py-0.5"
+                    data-project-id={project.id}
+                    title={`Ver ficha completa de ${project.title}`}
+                  >
+                    <span class="relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-clay group-hover:after:bg-ochre after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">
+                      DESCÚBRELO
+                    </span>
+                    <span class="text-sm transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <!-- Tab Content: Comercial -->
+        <div id="catalog-panel-comercial" class="catalog-panel hidden grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+          <h2 class="sr-only">Arquitectura Comercial, Espacios Recreativos & Retail en Perú</h2>
+          {commercialProjects.map((project, cardIndex) => {
+            const previewImages = project.gallery.slice(0, 3);
+            return (
+              <article 
+                class="catalog-card group flex flex-col cursor-pointer"
+                data-project-id={project.id}
+              >
+                <!-- Render a sangre en la parte superior sin bordes laterales ni superior -->
+                <div 
+                  class="crossfade-container relative w-full aspect-[4/5] overflow-hidden rounded-t-[3px] bg-[#1c1c15] shadow-sm mb-[-1px]"
+                  data-card-index={cardIndex}
+                >
+                  {previewImages.map((imgSrc, imgIdx) => (
+                    <img 
+                      src={imgSrc} 
+                      alt={`${project.typology || project.category} - ${project.title} en ${project.location} | Antarr Arquitectos - Vista ${imgIdx + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                      width="800"
+                      height="1000"
+                      class={`crossfade-img absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-105 ${imgIdx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                      style={imgIdx === 0 ? "opacity: 1 !important; display: block !important;" : "display: block !important;"}
+                      data-img-index={imgIdx}
+                    />
+                  ))}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none"></div>
+                </div>
+
+                <!-- Zócalo Inferior de Mármol con Información Técnica & Botón Descúbrelo -->
+                <div 
+                  class="project-info-plaque relative z-10 flex-1 flex items-baseline justify-between gap-4"
+                  style={getMarbleStyle(cardIndex)}
+                >
+                  <div>
+                    <h3 class="font-tech text-xs tracking-widest uppercase text-[#1C1C15] font-bold">
+                      {project.title} / {project.location}
+                    </h3>
+                    <p class="font-sans text-[11px] text-[#2D2D23]/85 mt-0.5 font-normal">
+                      {project.areaBuilt ? `${project.typology} · ${project.areaBuilt}` : project.typology}
+                    </p>
+                  </div>
+                  
+                  <a 
+                    href={`/proyectos/${project.id}`}
+                    class="open-modal-trigger font-tech text-xs tracking-widest uppercase text-clay group-hover:text-ochre transition-colors font-bold flex items-center gap-1.5 cursor-pointer whitespace-nowrap py-0.5"
+                    data-project-id={project.id}
+                    title={`Ver ficha completa de ${project.title}`}
+                  >
+                    <span class="relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-clay group-hover:after:bg-ochre after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">
+                      DESCÚBRELO
+                    </span>
+                    <span class="text-sm transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <!-- Tab Content: Diseño de Interiores -->
+        <div id="catalog-panel-interiores" class="catalog-panel hidden grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+          <h2 class="sr-only">Diseño de Interiores & Arquitectura Interior en Perú</h2>
+          {interiorProjects.map((project, cardIndex) => {
+            const previewImages = project.gallery.slice(0, 3);
+            return (
+              <article 
+                class="catalog-card group flex flex-col cursor-pointer"
+                data-project-id={project.id}
+              >
+                <!-- Render a sangre en la parte superior sin bordes laterales ni superior -->
+                <div 
+                  class="crossfade-container relative w-full aspect-[4/5] overflow-hidden rounded-t-[3px] bg-[#1c1c15] shadow-sm mb-[-1px]"
+                  data-card-index={cardIndex}
+                >
+                  {previewImages.map((imgSrc, imgIdx) => (
+                    <img 
+                      src={imgSrc} 
+                      alt={`${project.typology || project.category} - ${project.title} en ${project.location} | Antarr Arquitectos - Vista ${imgIdx + 1}`}
+                      loading="lazy"
+                      decoding="async"
+                      width="800"
+                      height="1000"
+                      class={`crossfade-img absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-105 ${imgIdx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                      style={imgIdx === 0 ? "opacity: 1 !important; display: block !important;" : "display: block !important;"}
+                      data-img-index={imgIdx}
+                    />
+                  ))}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none"></div>
+                </div>
+
+                <!-- Zócalo Inferior de Mármol con Información Técnica & Botón Descúbrelo -->
+                <div 
+                  class="project-info-plaque relative z-10 flex-1 flex items-baseline justify-between gap-4"
+                  style={getMarbleStyle(cardIndex)}
+                >
+                  <div>
+                    <h3 class="font-tech text-xs tracking-widest uppercase text-[#1C1C15] font-bold">
+                      {project.title} / {project.location}
+                    </h3>
+                    <p class="font-sans text-[11px] text-[#2D2D23]/85 mt-0.5 font-normal">
+                      {project.areaBuilt ? `${project.typology} · ${project.areaBuilt}` : project.typology}
+                    </p>
+                  </div>
+                  
+                  <a 
+                    href={`/proyectos/${project.id}`}
+                    class="open-modal-trigger font-tech text-xs tracking-widest uppercase text-clay group-hover:text-ochre transition-colors font-bold flex items-center gap-1.5 cursor-pointer whitespace-nowrap py-0.5"
+                    data-project-id={project.id}
+                    title={`Ver ficha completa de ${project.title}`}
+                  >
+                    <span class="relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-clay group-hover:after:bg-ochre after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">
+                      DESCÚBRELO
+                    </span>
+                    <span class="text-sm transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+      </section>
+
+    </main>
+
+    <Footer />
+    <ProjectModal />
+  </div>
+</Layout>
+
+<style>
+  .catalog-card {
+    background-color: #D9DCDD;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 4px 6px -1px rgba(35, 28, 20, 0.12),
+      0 16px 32px -4px rgba(35, 28, 20, 0.14);
+    transition: transform 0.35s ease-out, box-shadow 0.35s ease-out;
+  }
+  .catalog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 8px 14px -2px rgba(35, 28, 20, 0.16),
+      0 22px 38px -4px rgba(35, 28, 20, 0.18);
+  }
+  .project-info-plaque {
+    flex: 1 1 auto;
+    width: 100%;
+    background-image: url('/assets/marmol-placa.jpg');
+    background-color: #D9DCDD;
+    background-size: 550px auto;
+    background-repeat: repeat;
+    image-rendering: -webkit-optimize-contrast;
+    margin-top: 0;
+    padding: 1.1rem 1.25rem 1.25rem 1.25rem;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Animación botánica orgánica para la rama de eucalipto en cabecera */
+  .eucalipto-breeze {
+    transform-origin: right center;
+    animation: eucalipto-sway 7s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes eucalipto-sway {
+    0% {
+      transform: rotate(-1.5deg);
+    }
+    100% {
+      transform: rotate(1.5deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eucalipto-breeze {
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Tab Switching & Hash Navigation Logic
+  const tabBtns = document.querySelectorAll('.catalog-tab-btn');
+  const panels: Record<string, HTMLElement | null> = {
+    residencial: document.getElementById('catalog-panel-residencial'),
+    comercial: document.getElementById('catalog-panel-comercial'),
+    interiores: document.getElementById('catalog-panel-interiores')
+  };
+
+  const ACTIVE_CLASSES = ['active', 'btn-terracota'];
+  const INACTIVE_CLASSES = ['bg-[#EAE3D8]', 'hover:bg-[#E2D9CC]', 'text-[#3D3328]', 'border', 'border-[#D5CABE]', 'shadow-[inset_0_1px_1px_rgba(0,0,0,0.06)]'];
+
+  function activateTab(tabKey: string, shouldScroll = false) {
+    const cleanKey = tabKey.replace('#', '').toLowerCase();
+    if (!panels[cleanKey]) return;
+
+    // 1. Update button styles
+    tabBtns.forEach(btn => {
+      const bTab = btn.getAttribute('data-tab');
+      if (bTab === cleanKey) {
+        btn.classList.remove(...INACTIVE_CLASSES);
+        btn.classList.add(...ACTIVE_CLASSES);
+      } else {
+        btn.classList.remove(...ACTIVE_CLASSES);
+        btn.classList.add(...INACTIVE_CLASSES);
+      }
+    });
+
+    // 2. Update panel visibility & guarantee visible images
+    Object.keys(panels).forEach(key => {
+      const panel = panels[key];
+      if (panel) {
+        if (key === cleanKey) {
+          panel.classList.remove('hidden');
+          panel.classList.add('grid');
+
+          // Blindaje activo: Forzar visibilidad y z-index de las fotos de portada de inmediato
+          panel.querySelectorAll<HTMLImageElement>('.crossfade-container img:first-of-type, .catalog-card img:first-of-type').forEach(img => {
+            img.style.setProperty('opacity', '1', 'important');
+            img.style.setProperty('display', 'block', 'important');
+            img.style.zIndex = '10';
+          });
+          window.dispatchEvent(new Event('resize'));
+        } else {
+          panel.classList.add('hidden');
+          panel.classList.remove('grid');
+        }
+      }
+    });
+
+    // 3. Smooth scroll to catalog section
+    if (shouldScroll) {
+      setTimeout(() => {
+        const targetEl = document.getElementById('catalogo') || document.getElementById('tab-btn-residencial');
+
+        if (targetEl) {
+          const lenis = (window as any).lenis;
+          const targetY = targetEl.getBoundingClientRect().top + window.scrollY - 100;
+          if (lenis) {
+            lenis.scrollTo(targetY, { duration: 1.1 });
+          } else {
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+          }
+        }
+      }, 70);
+    }
+  }
+
+  // Click handler on tabs
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+      if (!targetTab) return;
+      activateTab(targetTab, false);
+      history.pushState(null, '', `#${targetTab}`);
+    });
+  });
+
+  // Handle initial page load with hash
+  const initialHash = window.location.hash.toLowerCase();
+  const validTabs = ['#residencial', '#comercial', '#interiores'];
+  if (initialHash && validTabs.includes(initialHash)) {
+    activateTab(initialHash, true);
+  }
+
+  // Handle hash changes (e.g. clicking footer links while already on /proyectos)
+  window.addEventListener('hashchange', () => {
+    const newHash = window.location.hash.toLowerCase();
+    if (newHash && validTabs.includes(newHash)) {
+      activateTab(newHash, true);
+    }
+  });
+
+  // Crossfade animation: las fotos secundarias emergen por encima (z-20) sin apagar la portada base
+  const containers = document.querySelectorAll('.crossfade-container');
+  containers.forEach((container, idx) => {
+    const images = container.querySelectorAll<HTMLImageElement>('.crossfade-img');
+    if (images.length <= 1) return;
+
+    let activeIndex = 0;
+    const staggerDelay = (idx % 4) * 1100;
+
+    setTimeout(() => {
+      setInterval(() => {
+        // Prevent desync while panel is hidden
+        const panel = container.closest('.catalog-panel');
+        if (panel && panel.classList.contains('hidden')) return;
+
+        const nextIndex = (activeIndex + 1) % images.length;
+        
+        if (nextIndex === 0) {
+          // Desvanecer todas las fotos secundarias para revelar limpiamente la portada base
+          images.forEach((img, i) => {
+            if (i > 0) {
+              img.classList.remove('opacity-100', 'z-20');
+              img.classList.add('opacity-0', 'z-0');
+            }
+          });
+        } else {
+          // La imagen secundaria seleccionada se desvanece hacia arriba con z-20
+          images[nextIndex].classList.remove('opacity-0', 'z-0');
+          images[nextIndex].classList.add('opacity-100', 'z-20');
+
+          // Ocultar la secundaria previa si no era la portada
+          if (activeIndex > 0) {
+            images[activeIndex].classList.remove('opacity-100', 'z-20');
+            images[activeIndex].classList.add('opacity-0', 'z-0');
+          }
+        }
+
+        activeIndex = nextIndex;
+      }, 4500);
+    }, staggerDelay);
+  });
+
+  // Global Delegated Modal Opener: 100% robust across all tabs including Diseño de Interiores
+  document.addEventListener('click', (e) => {
+    // Permite navegación nativa si el usuario presiona Ctrl, Cmd o botón central
+    if (e.ctrlKey || e.metaKey || e.button === 1) return;
+    const target = e.target as HTMLElement | null;
+    const trigger = target?.closest('[data-project-id]');
+    if (trigger) {
+      e.preventDefault();
+      const projectId = trigger.getAttribute('data-project-id');
+      if (projectId) {
+        window.dispatchEvent(new CustomEvent('open-project-modal', { detail: { projectId } }));
+      }
+    }
+  });
+</script>

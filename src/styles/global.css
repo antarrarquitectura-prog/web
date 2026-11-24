@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #F6F3EE;
+    --color-text: #2d2d23;
+  }
+
+  html {
+    background-color: #F6F3EE;
+    color: #2d2d23;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #F6F3EE;
+    background-image: url('/assets/textura-piedra.jpg');
+    background-repeat: repeat;
+    background-size: 380px auto;
+    background-position: left top;
+    background-attachment: fixed;
+    color: #2d2d23;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: #864728;
+    color: #FAF8F5;
+  }
+}
+
+/* Inhabilitación de acciones directas sobre multimedia (Imágenes y Videos) */
+img, video {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Lenis Recommended CSS & Isolation */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Architectural Utilities con Paleta Norteña */
+.hairline-border {
+  border: 1px solid rgba(45, 45, 35, 0.12);
+}
+
+.hairline-border-dark {
+  border: 1px solid rgba(250, 248, 245, 0.16);
+}
+
+.glass-nav {
+  background: rgba(250, 248, 245, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.architectural-grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(45, 45, 35, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(45, 45, 35, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Custom Scrollbar Norteña (Arcilla & Arena) */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #864728;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6e381e;
+}
+
+/* =========================================================================
+   PLACAS FÍSICAS DE TERRACOTA / BOTONES PRIMARIOS MATÉRICOS
+   ========================================================================= */
+.btn-terracota,
+.btn-primary,
+.peer:checked ~ .btn-terracota-chip {
+  background-color: #864728;
+  background-image: url('/assets/terracota.jpg');
+  background-size: 380px auto;
+  background-repeat: repeat;
+  background-position: center center;
+  color: #FAF6F0;
+  border-radius: 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.45); /* Arista superior expuesta a luz cenital */
+  border-bottom: 1px solid rgba(50, 20, 10, 0.45);  /* Canto inferior en penumbra */
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: 1px solid rgba(50, 20, 10, 0.25);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.40),
+    inset 0 -1.5px 1px rgba(40, 15, 5, 0.30),
+    0 2px 4px rgba(30, 15, 5, 0.20),
+    0 6px 14px rgba(30, 15, 5, 0.18);
+  text-shadow: 0 1px 2px rgba(30, 10, 5, 0.6);
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.btn-terracota:hover,
+.btn-primary:hover,
+.peer:checked ~ .btn-terracota-chip:hover {
+  filter: brightness(1.04);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.50),
+    inset 0 -1.5px 1px rgba(40, 15, 5, 0.30),
+    0 4px 8px rgba(30, 15, 5, 0.22),
+    0 10px 20px rgba(30, 15, 5, 0.20);
+}
+
+.btn-terracota:active,
+.btn-primary:active,
+.peer:checked ~ .btn-terracota-chip:active {
+  transform: translateY(1px);
+  box-shadow: 
+    inset 0 1.5px 2px rgba(30, 10, 5, 0.40),
+    0 2px 4px rgba(30, 15, 5, 0.15);
+}
+
+/* Fichas Inactivas de Selección de Tipología en Formulario (Bajo Relieve Mineral / Muestrario de Taller) */
+.btn-terracota-chip {
+  background-color: #EAE3D8;
+  color: #3D3328;
+  border-radius: 3px;
+  border: 1px solid #D5CABE;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.btn-terracota-chip:hover {
+  background-color: #E2D9CC;
+}
+
+/* =========================================================================
+   CANON TECTÓNICO MULIER: FÍSICA DE LA INCISIÓN EN "V" EN ROCA & MADERA
+   ========================================================================= */
+.mulier-incised {
+  color: rgba(35, 27, 20, 0.88);
+  mix-blend-mode: multiply;
+  text-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.70),  /* Arista inferior tallada iluminada cenital */
+    0 -1.5px 1px rgba(18, 12, 8, 0.60); /* Oclusión y profundidad interna superior en V */
+}
+
+.mulier-incised-dark {
+  color: rgba(22, 16, 12, 0.92);
+  mix-blend-mode: multiply;
+  text-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.85),  /* Arista cenital reforzada */
+    0 -1.5px 1px rgba(10, 6, 4, 0.75);  /* Profundidad interna superior en V */
+}
+
+/* =========================================================================
+   FICHAS TÉCNICAS DE SECCIÓN (MUESTRARIO DE TALLER / RECTIFICADO 2PX)
+   ========================================================================= */
+.badge-canteria {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.875rem;
+  border-radius: 2px;
+  background-color: #EAE3D8;
+  border: 1px solid #D5CABE;
+  border-top: 1px solid rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid rgba(60, 48, 35, 0.15);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.60),
+    0 1px 2px rgba(35, 28, 20, 0.06);
+  color: #864728;
+  user-select: none;
+}

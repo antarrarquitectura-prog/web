@@ -1,0 +1,602 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { PROJECTS, type Project } from '../../data/projects';
+
+export function getStaticPaths() {
+  return PROJECTS.map((project) => ({
+    params: { id: project.id },
+    props: { project }
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+// Canonical and dynamic SEO values
+const canonicalUrl = `https://antarrarquitectos.com/proyectos/${project.id}`;
+const pageTitle = `${project.title} | ${project.typology} en ${project.location} · Antarr Arquitectos`;
+const pageDescription = project.excerpt 
+  ? `${project.excerpt} Proyecto de ${project.typology} en ${project.location} diseñado por Antarr Arquitectos.`
+  : `Memoria descriptiva y planos de ${project.title}, ${project.typology} en ${project.location}. Estudio de arquitectura de autor Antarr Arquitectos.`;
+
+const ogImageUrl = project.coverImage.startsWith('http') 
+  ? project.coverImage 
+  : `https://antarrarquitectos.com${project.coverImage}`;
+
+// Structured Data Schema.org
+const projectSchema = {
+  "@context": "https://schema.org",
+  "@type": project.category === 'Residencial' ? "SingleFamilyResidence" : "CreativeWork",
+  "name": `${project.title} - Antarr Arquitectos`,
+  "headline": `${project.title} | ${project.typology} en ${project.location}`,
+  "description": project.description,
+  "image": project.gallery.map(img => img.startsWith('http') ? img : `https://antarrarquitectos.com${img}`),
+  "author": {
+    "@type": "ArchitecturalFirm",
+    "name": "Antarr Arquitectos",
+    "url": "https://antarrarquitectos.com"
+  },
+  "creator": {
+    "@type": "ArchitecturalFirm",
+    "name": "Antarr Arquitectos"
+  },
+  "locationCreated": {
+    "@type": "Place",
+    "name": project.location,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": project.location.split(',')[0].trim(),
+      "addressRegion": project.location.split(',')[1]?.trim() || "Perú",
+      "addressCountry": "PE"
+    }
+  },
+  "spatialCoverage": project.location,
+  ...(project.year ? { "temporalCoverage": project.year } : {})
+};
+
+const isInteriors = project.category === 'Diseño de Interiores';
+
+// Calculate next and previous project in the catalog
+const currentIndex = PROJECTS.findIndex(p => p.id === project.id);
+const prevProject = currentIndex > 0 ? PROJECTS[currentIndex - 1] : PROJECTS[PROJECTS.length - 1];
+const nextProject = currentIndex < PROJECTS.length - 1 ? PROJECTS[currentIndex + 1] : PROJECTS[0];
+
+const waQuery = encodeURIComponent(`Hola Antarr Arquitectos, vi en su web el proyecto ${project.title} (${project.location}) y me gustaría cotizar una propuesta arquitectónica con características similares.`);
+const waLink = `https://wa.me/51926542501?text=${waQuery}`;
+
+// Deduplicar especificaciones técnicas ya presentes en los campos fijos de la Ficha de Proyecto
+const normalizeSpecLabel = (label: string) =>
+  label
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+
+const duplicatedSpecLabels = new Set([
+  'ubicacion',
+  'tipologia',
+  'area',
+  'area disenada',
+  'area techada',
+  'area total',
+  'ano',
+  'estado',
+]);
+if (project.areaLand) {
+  duplicatedSpecLabels.add('area terreno');
+}
+
+const filteredSpecs = project.specs.filter(
+  (spec) => !duplicatedSpecLabels.has(normalizeSpecLabel(spec.label))
+);
+
+const lightboxImages = project.gallery.length > 0 ? project.gallery : [project.coverImage];
+const lightboxAlts = lightboxImages.map(
+  (_, idx) =>
+    project.galleryAlts?.[idx] ||
+    `${project.typology} - ${project.title} en ${project.location} | Vista ${idx + 1} - Antarr Arquitectos`
+);
+const coverLightboxIndex = Math.max(0, lightboxImages.indexOf(project.coverImage));
+---
+
+<Layout 
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonicalUrl}
+  ogImage={ogImageUrl}
+>
+  <!-- Schema.org específico de la obra arquitectónica -->
+  <script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
+
+  <div class="min-h-screen flex flex-col justify-between bg-transparent">
+    <Navbar />
+
+    <main class="flex-grow pt-28 sm:pt-32 pb-20 sm:pb-28 relative">
+      <div class="max-w-7xl mx-auto px-6 md:px-10">
+
+        <!-- Barra de Navegación de Retorno Editorial & Breadcrumb -->
+        <nav aria-label="Navegación de retorno" class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-carbon/10 pb-4">
+          <a 
+            href="/proyectos" 
+            class="inline-flex items-center gap-2 font-tech text-xs tracking-widest uppercase text-clay hover:text-ochre transition-colors font-bold group"
+          >
+            <span class="transform group-hover:-translate-x-1.5 transition-transform text-sm">&larr;</span>
+            <span>Volver al archivo de obras</span>
+          </a>
+
+          <div class="flex items-center gap-2 text-[11px] font-mono text-stone-500 uppercase tracking-wider">
+            <a href="/" class="hover:text-carbon transition-colors">Inicio</a>
+            <span>/</span>
+            <a href="/proyectos" class="hover:text-carbon transition-colors">Proyectos</a>
+            <span>/</span>
+            <span class="text-carbon font-semibold truncate max-w-[200px] sm:max-w-none">{project.title}</span>
+          </div>
+        </nav>
+
+        <!-- Cabecera de Proyecto: Jerarquía Editorial de Autor -->
+        <header class="space-y-4 mb-10 max-w-4xl">
+          <div class="badge-canteria">
+            <span class="w-1.5 h-1.5 bg-clay rounded-none"></span>
+            <span class="font-tech text-xs tracking-widest uppercase font-bold">
+              • {project.category.toUpperCase()} &middot; ANTARR ARQUITECTOS
+            </span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light text-carbon tracking-tight leading-tight">
+            {project.title}
+          </h1>
+
+          <p class="font-tech text-xs sm:text-sm tracking-wider uppercase text-clay font-bold flex flex-wrap items-center gap-2 sm:gap-3">
+            <span>{project.typology}</span>
+            <span class="text-carbon/30">&bull;</span>
+            <span>{project.location}</span>
+            <span class="text-carbon/30">&bull;</span>
+            <span>{isInteriors || !project.year ? 'COLECCIÓN MULTIPROYECTO' : `AÑO ${project.year}`}</span>
+          </p>
+
+          <p class="font-sans text-sm sm:text-[16px] leading-relaxed text-[#57504A] pt-2">
+            {project.excerpt}
+          </p>
+        </header>
+
+        <!-- Grid Principal: Visualización de Obra (Izquierda) + Ficha Técnica y CTA (Derecha) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+          
+          <!-- Columna Principal: Galería Fotográfica y Memoria Descriptiva -->
+          <div class="lg:col-span-8 space-y-12">
+            
+            <!-- Portada Principal con Encuadre Íntegro sin Recortes y Blindaje contra Descargas -->
+            <div 
+              role="button"
+              tabindex="0"
+              aria-label={`Ampliar fotografía principal de ${project.title}`}
+              data-lightbox-trigger
+              data-lightbox-index={coverLightboxIndex}
+              class="group relative w-full rounded-[3px] overflow-hidden bg-[#1C1C15]/5 shadow-md border-t border-white/60 border-b border-[#3C2D20]/25 select-none cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-clay/50"
+              oncontextmenu="return false;"
+            >
+              <img 
+                src={project.coverImage} 
+                alt={project.galleryAlts?.[coverLightboxIndex] || `${project.typology} - ${project.title} en ${project.location} | Antarr Arquitectos`}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                draggable="false"
+                class="w-full h-auto object-contain block select-none pointer-events-none transition-transform duration-700 ease-out group-hover:scale-[1.01]"
+              />
+              <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/45 via-black/15 to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-3 left-4 text-[10px] font-mono uppercase tracking-widest text-stone-200 bg-black/55 backdrop-blur-sm px-2.5 py-1 rounded-[2px] pointer-events-none">
+                Fotografía Principal de Obra
+              </div>
+              <div class="absolute bottom-3 right-4 text-[10px] font-mono uppercase tracking-widest text-stone-200 bg-black/55 backdrop-blur-sm px-2.5 py-1 rounded-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                Ampliar &nearr;
+              </div>
+            </div>
+
+            <!-- Memoria Descriptiva y Concepto Espacial -->
+            <section class="space-y-4 border-t border-carbon/10 pt-8">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-clay"></span>
+                <h2 class="font-tech text-xs uppercase tracking-widest text-carbon font-bold">
+                  Memoria Descriptiva & Concepto Espacial
+                </h2>
+              </div>
+              <p class="font-sans text-sm sm:text-[16px] text-[#2C2825] leading-relaxed whitespace-pre-line font-normal">
+                {project.description}
+              </p>
+            </section>
+
+            <!-- Galería de Vistas y Detalles Constructivos con Encuadre Íntegro, Lightbox y Blindaje Activo -->
+            {project.gallery.length > 1 && (
+              <section class="space-y-6 border-t border-carbon/10 pt-8">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-clay"></span>
+                    <h2 class="font-tech text-xs uppercase tracking-widest text-carbon font-bold">
+                      Galería de Vistas y Detalles Constructivos
+                    </h2>
+                  </div>
+                  <span class="font-mono text-xs text-stone-500">
+                    {project.gallery.length} Vistas Documentadas
+                  </span>
+                </div>
+
+                <div class="columns-1 md:columns-2 gap-6">
+                  {project.gallery.map((imgUrl, imgIdx) => (
+                    <div 
+                      role="button"
+                      tabindex="0"
+                      aria-label={`Ampliar Vista ${imgIdx + 1} de ${project.gallery.length} — ${project.title}`}
+                      data-lightbox-trigger
+                      data-lightbox-index={imgIdx}
+                      class="group relative w-full break-inside-avoid mb-6 rounded-[3px] overflow-hidden bg-[#1C1C15]/5 shadow-sm border border-carbon/10 select-none cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-clay/50"
+                      oncontextmenu="return false;"
+                    >
+                      <img 
+                        src={imgUrl} 
+                        alt={lightboxAlts[imgIdx]}
+                        loading="lazy"
+                        decoding="async"
+                        draggable="false"
+                        class="w-full h-auto object-contain block select-none pointer-events-none transition-transform duration-500 group-hover:scale-[1.02]"
+                      />
+                      <div class="absolute inset-0 bg-black/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                      <div class="absolute bottom-2 right-2 text-[10px] font-mono text-stone-100 bg-black/65 backdrop-blur-sm px-2 py-0.5 rounded-[2px] pointer-events-none">
+                        Vista {imgIdx + 1} / {project.gallery.length}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+          </div>
+
+          <!-- Columna Lateral: Ficha Técnica de Cantería y CTA de Asesoría -->
+          <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-32">
+            
+            <!-- Placa de Ficha Técnica -->
+            <div class="p-6 sm:p-7 rounded-[3px] bg-[#EAE3D8] border-t border-white border-b border-[#3C2D20]/25 shadow-sm space-y-5">
+              <div class="border-b border-[#3C2D20]/15 pb-3">
+                <span class="font-tech text-[10px] tracking-widest uppercase text-olive font-bold block">
+                  Información Técnica
+                </span>
+                <h3 class="font-display text-xl text-carbon tracking-tight font-medium mt-0.5">
+                  Ficha de Proyecto
+                </h3>
+              </div>
+
+              <dl class="space-y-3 font-sans text-xs">
+                {isInteriors ? (
+                  project.specs.map((spec) => (
+                    <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                      <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">{spec.label}</dt>
+                      <dd class="text-carbon font-semibold text-right max-w-[60%]">{spec.value}</dd>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                      <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">Ubicación</dt>
+                      <dd class="text-carbon font-semibold text-right">{project.location}</dd>
+                    </div>
+
+                    <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                      <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">Tipología</dt>
+                      <dd class="text-carbon font-semibold text-right">{project.typology}</dd>
+                    </div>
+
+                    {project.areaBuilt && (
+                      <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                        <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">Área Diseñada</dt>
+                        <dd class="text-carbon font-semibold text-right">{project.areaBuilt}</dd>
+                      </div>
+                    )}
+
+                    {project.areaLand && (
+                      <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                        <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">Área Terreno</dt>
+                        <dd class="text-carbon font-semibold text-right">{project.areaLand}</dd>
+                      </div>
+                    )}
+
+                    {project.year && (
+                      <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                        <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">Año</dt>
+                        <dd class="text-carbon font-semibold text-right">{project.year}</dd>
+                      </div>
+                    )}
+
+                    <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                      <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">Estado</dt>
+                      <dd class="text-clay font-semibold text-right">{project.status}</dd>
+                    </div>
+
+                    {/* Especificaciones adicionales personalizadas (deduplicadas) */}
+                    {filteredSpecs.map((spec) => (
+                      <div class="flex justify-between items-baseline border-b border-[#3C2D20]/10 pb-1.5">
+                        <dt class="text-[#5A4D3F] font-tech uppercase tracking-wider text-[11px]">{spec.label}</dt>
+                        <dd class="text-carbon font-semibold text-right max-w-[60%]">{spec.value}</dd>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </dl>
+            </div>
+
+            <!-- Tarjeta de Conversión Directa a Asesoría Técnica -->
+            <div class="p-6 rounded-[3px] bg-gradient-to-br from-[#1E1914] to-[#14100D] text-[#F4F3EF] border-t border-white/20 border-b border-black/60 shadow-lg space-y-4">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-none bg-clay"></span>
+                <span class="font-tech text-xs uppercase tracking-widest text-[#F4F3EF] font-bold">
+                  Asesoría Proyectual
+                </span>
+              </div>
+
+              <p class="font-sans text-xs text-[#F4F3EF]/80 leading-relaxed font-light">
+                ¿Planeas un proyecto con este nivel de rigor constructivo y sensibilidad espacial? Conversa directamente con el equipo directivo de Antarr Arquitectos.
+              </p>
+
+              <div class="space-y-2 pt-1">
+                <a 
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener"
+                  class="btn-terracota inline-flex items-center justify-center w-full py-2.5 font-tech text-xs tracking-widest uppercase font-bold gap-2 cursor-pointer shadow-sm"
+                >
+                  <span>Consultar por WhatsApp &rarr;</span>
+                </a>
+
+                <a 
+                  href="/#contacto" 
+                  class="inline-flex items-center justify-center w-full py-2 font-tech text-[11px] tracking-wider uppercase text-stone-300 hover:text-white border border-stone-600/60 hover:border-stone-400 rounded-[2px] transition-colors"
+                >
+                  Solicitar Cotización
+                </a>
+              </div>
+            </div>
+
+          </aside>
+
+        </div>
+
+        <!-- Paginación y Enlaces a Proyectos Siguiente / Anterior -->
+        <nav aria-label="Navegación entre obras" class="mt-16 pt-8 border-t border-carbon/15 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+          <a 
+            href={`/proyectos/${prevProject.id}`}
+            class="flex items-center gap-3 p-4 rounded-[2px] bg-[#EAE3D8]/50 hover:bg-[#EAE3D8] transition-colors border border-carbon/10 group text-left"
+          >
+            <span class="text-clay text-lg transform group-hover:-translate-x-1 transition-transform">&larr;</span>
+            <div>
+              <span class="font-tech text-[10px] uppercase tracking-widest text-[#5A4D3F] block">Obra Anterior</span>
+              <span class="font-display text-sm text-carbon font-medium">{prevProject.title}</span>
+            </div>
+          </a>
+
+          <a 
+            href="/proyectos" 
+            class="hidden md:inline-flex items-center justify-center px-4 py-2 font-tech text-xs uppercase tracking-widest text-clay hover:underline font-bold"
+          >
+            Ver Todas las Obras
+          </a>
+
+          <a 
+            href={`/proyectos/${nextProject.id}`}
+            class="flex items-center justify-end gap-3 p-4 rounded-[2px] bg-[#EAE3D8]/50 hover:bg-[#EAE3D8] transition-colors border border-carbon/10 group text-right"
+          >
+            <div>
+              <span class="font-tech text-[10px] uppercase tracking-widest text-[#5A4D3F] block">Siguiente Obra</span>
+              <span class="font-display text-sm text-carbon font-medium">{nextProject.title}</span>
+            </div>
+            <span class="text-clay text-lg transform group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </a>
+        </nav>
+
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+
+  <!-- Visor Lightbox Interactivo de Pantalla Completa con Protección de Imágenes -->
+  <div
+    id="project-lightbox"
+    class="fixed inset-0 z-[120] hidden items-center justify-center bg-[#14110E]/92 backdrop-blur-md p-4 sm:p-8 select-none opacity-0 transition-opacity duration-200"
+    role="dialog"
+    aria-modal="true"
+    aria-label={`Visor fotográfico de ${project.title}`}
+    tabindex="-1"
+    data-lenis-prevent
+    oncontextmenu="return false;"
+  >
+    <!-- Barra superior minimalista: Título, Contador y Cierre -->
+    <div class="absolute top-0 inset-x-0 z-30 flex items-center justify-between px-4 sm:px-8 py-4 bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
+      <div class="flex items-center gap-3 pointer-events-auto">
+        <span class="font-display text-sm sm:text-[16px] text-stone-100 font-light tracking-tight">
+          {project.title}
+        </span>
+        <span class="text-stone-500">&middot;</span>
+        <span id="lightbox-counter" class="font-mono text-xs tracking-widest uppercase text-stone-300">
+          Vista 1 / {lightboxImages.length}
+        </span>
+      </div>
+
+      <button
+        id="lightbox-close"
+        type="button"
+        aria-label="Cerrar visor"
+        class="pointer-events-auto w-10 h-10 flex items-center justify-center rounded-[2px] bg-white/10 hover:bg-[#864728] text-stone-100 border border-white/20 hover:border-[#864728] text-2xl leading-none transition-all duration-200 cursor-pointer focus:outline-none"
+      >
+        &times;
+      </button>
+    </div>
+
+    <!-- Controles Anterior / Siguiente -->
+    {lightboxImages.length > 1 && (
+      <>
+        <button
+          id="lightbox-prev"
+          type="button"
+          aria-label="Vista anterior"
+          class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-[2px] bg-black/55 hover:bg-[#864728] text-stone-100 border border-white/25 hover:border-[#864728] transition-all duration-200 cursor-pointer backdrop-blur-sm focus:outline-none"
+        >
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <button
+          id="lightbox-next"
+          type="button"
+          aria-label="Vista siguiente"
+          class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-[2px] bg-black/55 hover:bg-[#864728] text-stone-100 border border-white/25 hover:border-[#864728] transition-all duration-200 cursor-pointer backdrop-blur-sm focus:outline-none"
+        >
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </>
+    )}
+
+    <!-- Contenedor de Imagen Protegida sin Recortes -->
+    <div
+      id="lightbox-image-frame"
+      class="relative z-20 flex items-center justify-center select-none"
+      oncontextmenu="return false;"
+    >
+      <img
+        id="lightbox-img"
+        src={lightboxImages[0]}
+        alt={`${project.typology} - ${project.title} en ${project.location}`}
+        draggable="false"
+        class="max-h-[85vh] max-w-[90vw] w-auto h-auto object-contain rounded-[2px] shadow-2xl select-none pointer-events-none transition-opacity duration-200"
+      />
+    </div>
+  </div>
+
+  <script define:vars={{ lightboxImages, lightboxAlts, projectTitle: project.title, projectTypology: project.typology, projectLocation: project.location }}>
+    (() => {
+      const lightbox = document.getElementById('project-lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      const lightboxFrame = document.getElementById('lightbox-image-frame');
+      const closeBtn = document.getElementById('lightbox-close');
+      const prevBtn = document.getElementById('lightbox-prev');
+      const nextBtn = document.getElementById('lightbox-next');
+      const triggers = document.querySelectorAll('[data-lightbox-trigger]');
+
+      if (!lightbox || !lightboxImg || !Array.isArray(lightboxImages) || lightboxImages.length === 0) return;
+
+      let currentIdx = 0;
+      let isOpen = false;
+
+      const renderLightbox = () => {
+        if (currentIdx < 0) currentIdx = lightboxImages.length - 1;
+        if (currentIdx >= lightboxImages.length) currentIdx = 0;
+
+        lightboxImg.src = lightboxImages[currentIdx];
+        lightboxImg.alt = (Array.isArray(lightboxAlts) && lightboxAlts[currentIdx])
+          ? lightboxAlts[currentIdx]
+          : `${projectTypology} - ${projectTitle} en ${projectLocation} | Vista ${currentIdx + 1}`;
+        if (lightboxCounter) {
+          lightboxCounter.textContent = `Vista ${currentIdx + 1} / ${lightboxImages.length}`;
+        }
+      };
+
+      const openLightbox = (index) => {
+        currentIdx = Number.isFinite(index) ? index : 0;
+        renderLightbox();
+        isOpen = true;
+
+        if (window.lenis) {
+          window.lenis.stop();
+        }
+        document.body.classList.add('overflow-hidden');
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        requestAnimationFrame(() => {
+          lightbox.classList.remove('opacity-0');
+          lightbox.classList.add('opacity-100');
+        });
+        lightbox.focus();
+      };
+
+      const closeLightbox = () => {
+        if (!isOpen) return;
+        isOpen = false;
+        lightbox.classList.remove('opacity-100');
+        lightbox.classList.add('opacity-0');
+        setTimeout(() => {
+          lightbox.classList.add('hidden');
+          lightbox.classList.remove('flex');
+        }, 180);
+        document.body.classList.remove('overflow-hidden');
+        if (window.lenis) {
+          window.lenis.start();
+        }
+      };
+
+      triggers.forEach((el) => {
+        const idx = parseInt(el.getAttribute('data-lightbox-index') || '0', 10);
+        el.addEventListener('click', () => openLightbox(idx));
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openLightbox(idx);
+          }
+        });
+      });
+
+      closeBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLightbox();
+      });
+
+      prevBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIdx -= 1;
+        renderLightbox();
+      });
+
+      nextBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentIdx += 1;
+        renderLightbox();
+      });
+
+      // Cerrar al hacer clic fuera de la imagen
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      lightboxFrame?.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      // Navegación y cierre por teclado
+      document.addEventListener('keydown', (e) => {
+        if (!isOpen) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeLightbox();
+        } else if (e.key === 'ArrowLeft' && lightboxImages.length > 1) {
+          e.preventDefault();
+          currentIdx -= 1;
+          renderLightbox();
+        } else if (e.key === 'ArrowRight' && lightboxImages.length > 1) {
+          e.preventDefault();
+          currentIdx += 1;
+          renderLightbox();
+        }
+      });
+    })();
+  </script>
+</Layout>
+

@@ -1,0 +1,236 @@
+---
+// Manifesto.astro - Declaración de Principios & Filosofía Espacial (Viewport Fit 100% Preciso & Orgánico)
+const PILLARS = [
+  {
+    number: "01",
+    titleLine1: "Rigor",
+    titleLine2: "Proyectual",
+    description: "Modelado de precisión y coordinación técnica integral que define cada detalle antes de la ejecución, minimizando incertidumbres y optimizando recursos de obra.",
+    bgPosition: "center top",
+  },
+  {
+    number: "02",
+    titleLine1: "Sensibilidad",
+    titleLine2: "Espacial",
+    description: "Selección consciente de texturas y materiales nobles —concreto caravista, piedra natural, acero y maderas tratadas— que dialogan con la luz natural y envejecen con dignidad.",
+    bgPosition: "center center",
+  },
+  {
+    number: "03",
+    titleLine1: "Confort",
+    titleLine2: "Bioclimático",
+    description: "Diseño pasivo adaptado al régimen de asoleamiento y vientos del emplazamiento, garantizando confort térmico, acústico y lumínico natural constante.",
+    bgPosition: "center bottom",
+  },
+];
+---
+
+<section 
+  id="filosofia" 
+  class="scroll-mt-20 w-full min-h-[calc(100vh-4.5rem)] flex flex-col justify-center py-8 lg:py-10 px-6 md:px-12 border-b border-hairline relative bg-transparent overflow-hidden"
+>
+  <!-- Elemento Botánico: Planta de Olivo en Margen Izquierdo (Canon Editorial Antarr) -->
+  <div 
+    class="absolute left-0 top-3 sm:top-5 md:top-6 lg:top-4 z-0 pointer-events-none select-none olivo-container"
+    aria-hidden="true"
+  >
+    <div class="olivo-hover-wrapper">
+      <div class="olivo-breeze-inner">
+        <img 
+          src="/assets/planta-olivo.png" 
+          alt="Planta de olivo" 
+          class="w-[120px] sm:w-[160px] md:w-[210px] lg:w-[240px] xl:w-[270px] h-auto object-contain block olivo-img"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Ambient Light Orbs for Sculptural Depth -->
+  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-full max-w-4xl h-72 bg-ochre/10 blur-3xl pointer-events-none"></div>
+
+  <div class="relative z-10 w-full max-w-7xl mx-auto text-center">
+    
+    <!-- Top Block: Badge + Statement + Description (Compact & Proportional) -->
+    <div class="max-w-4xl mx-auto space-y-3 mb-6 lg:mb-8">
+      <!-- Section Identifier Badge -->
+      <div class="badge-canteria mx-auto">
+        <span class="w-1.5 h-1.5 bg-clay rounded-none"></span>
+        <span class="font-tech text-[11px] tracking-technical uppercase font-bold">
+          • 01 &mdash; FILOSOFÍA ESPACIAL &middot; ANTARR ARQUITECTOS
+        </span>
+      </div>
+
+      <!-- Core Philosophy Statement Escalada & Limpia -->
+      <blockquote class="text-xl sm:text-2xl md:text-[1.7rem] leading-snug font-display font-light text-carbon mx-auto text-center tracking-tight" style="font-weight: 300 !important;">
+        &ldquo;No diseñamos volúmenes aislados; articulamos la <span class="font-serif italic text-[#864728]">luz</span>, la <span class="font-serif italic text-[#864728]">materia</span>{' '}y la <span class="font-serif italic text-[#864728]">sombra</span>{' '}para concebir espacios que inspiran, resisten las décadas y multiplican su plusvalía.&rdquo;
+      </blockquote>
+
+      <!-- Elegant Architectural Divider -->
+      <div class="flex items-center justify-center gap-3 py-0.5">
+        <div class="w-10 h-px bg-carbon/20"></div>
+        <div class="w-1.5 h-1.5 rounded-none bg-ochre"></div>
+        <div class="w-10 h-px bg-carbon/20"></div>
+      </div>
+
+      <!-- Descriptive Elaboration con Alto Contraste -->
+      <p style="color: #2D2B28 !important; opacity: 1 !important;" class="text-xs sm:text-sm max-w-3xl mx-auto text-center leading-relaxed font-normal">
+        En Antarr creemos en el balance indisoluble entre la aspiración plástica y el rigor proyectual. Cada residencia y espacio comercial es el resultado de un diálogo riguroso con el emplazamiento, el clima y las necesidades específicas de cada cliente.
+      </p>
+    </div>
+
+    <!-- Core Pillars Grid: 3 Placas Monolíticas de Travertino con Variación Natural de Vetas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-6xl mx-auto w-full items-stretch text-left">
+      {PILLARS.map((pillar) => (
+        <article
+          class="travertino-placa relative overflow-hidden group flex flex-col justify-between p-6 lg:p-7 rounded-sm border border-stone-300/80 shadow-[0_6px_24px_rgba(28,25,23,0.06)] transition-all duration-300 hover:-translate-y-1"
+        >
+          <div class="relative z-10 space-y-3">
+            <div class="flex items-center justify-between border-b border-[#3C2D20]/15 pb-2.5">
+              <span class="font-display text-3xl font-light text-[#8C5230] select-none">
+                {pillar.number}
+              </span>
+            </div>
+
+            <h3 class="font-display text-xl lg:text-2xl text-[#1C1917] font-normal tracking-tight leading-snug">
+              {pillar.titleLine1} {pillar.titleLine2}
+            </h3>
+
+            <p class="font-sans text-sm leading-relaxed text-[#2C2825] font-normal">
+              {pillar.description}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .travertino-placa {
+    position: relative;
+    overflow: hidden;
+    background-color: #EDE6DC;
+    border-top-color: rgba(255, 255, 255, 0.85);
+    border-bottom-color: rgba(60, 45, 30, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.72),
+      0 6px 24px rgba(28, 25, 23, 0.06);
+  }
+  .travertino-placa::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: url('/assets/travertino-placa.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  .travertino-placa::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(rgba(247, 244, 239, 0.20), rgba(247, 244, 239, 0.26));
+    pointer-events: none;
+  }
+  .travertino-placa:nth-child(1)::before {
+    background-position: 18% 15%;
+    background-size: 130%;
+  }
+  .travertino-placa:nth-child(2)::before {
+    background-position: 80% 52%;
+    background-size: 142%;
+    transform: scaleX(-1);
+  }
+  .travertino-placa:nth-child(3)::before {
+    background-position: 32% 85%;
+    background-size: 145%;
+  }
+  .travertino-placa:hover {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.88),
+      0 12px 28px -4px rgba(28, 25, 23, 0.12),
+      0 20px 36px -8px rgba(28, 25, 23, 0.08);
+  }
+
+  /* ==========================================================================
+     ANIMACIÓN ORGÁNICA BOTÁNICA - RAMA DE OLIVO (CANON ANTARR)
+     ========================================================================== */
+  .olivo-container {
+    transform-origin: 0% 100%;
+    line-height: 0;
+  }
+
+  /* Capa 1: Respuesta al Cursor y Transición Arquitectónica Suave */
+  .olivo-hover-wrapper {
+    display: block;
+    transform-origin: 0% 100%;
+    transition: transform 2.2s cubic-bezier(0.22, 1, 0.36, 1), filter 2.2s ease-out;
+    will-change: transform, filter;
+    pointer-events: auto;
+  }
+
+  /* Capa 2: Micro-loop de Brisa Ambiental Continua */
+  .olivo-breeze-inner {
+    display: block;
+    transform-origin: 0% 100%;
+    animation: brisa-olivo 12s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  .olivo-img {
+    display: block;
+    transform-origin: 0% 100%;
+    filter: drop-shadow(0 12px 24px rgba(35, 28, 18, 0.14));
+    transition: filter 2.2s ease-out;
+  }
+
+  /* Oscilación suave entre rotate(0deg) y rotate(0.7deg) como respiración ambiental */
+  @keyframes brisa-olivo {
+    0% {
+      transform: rotate(0deg) translateY(0px);
+    }
+    50% {
+      transform: rotate(0.35deg) translateY(-1px);
+    }
+    100% {
+      transform: rotate(0.7deg) translateY(-2px);
+    }
+  }
+
+  /* Interacción al cursor en dispositivos con puntero fino (Desktop / Mouse) */
+  @media (hover: hover) and (pointer: fine) {
+    /* Nivel 1: El cursor entra a la sección Filosofía */
+    #filosofia:hover .olivo-hover-wrapper {
+      transform: rotate(0.8deg) translateY(-2px);
+    }
+
+    #filosofia:hover .olivo-img {
+      filter: drop-shadow(0 16px 28px rgba(35, 28, 18, 0.16));
+    }
+
+    /* Nivel 2: Hover directo sobre la rama de olivo */
+    #filosofia .olivo-hover-wrapper:hover {
+      transform: rotate(1.5deg) translateY(-3px);
+    }
+
+    #filosofia .olivo-hover-wrapper:hover .olivo-img {
+      filter: drop-shadow(0 18px 30px rgba(35, 28, 18, 0.18));
+    }
+  }
+
+  /* Desactivación respetuosa para usuarios con reducción de movimiento */
+  @media (prefers-reduced-motion: reduce) {
+    .olivo-breeze-inner {
+      animation: none !important;
+    }
+    .olivo-hover-wrapper {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,516 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { SERVICES, type Service } from '../../data/services';
+import { PROJECTS, type Project } from '../../data/projects';
+
+export function getStaticPaths() {
+  return SERVICES.map((service) => ({
+    params: { slug: service.slug },
+    props: { service }
+  }));
+}
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+
+// Obtener obras asociadas al servicio para el carrusel de cabecera y tarjetas inferiores
+let carouselProjects: Project[] = [];
+if (service.relatedProjectIds && service.relatedProjectIds.length > 0) {
+  carouselProjects = service.relatedProjectIds
+    .map((id) => PROJECTS.find((p) => p.id === id))
+    .filter((p): p is Project => Boolean(p));
+} else {
+  const categoryMatches = PROJECTS.filter((p) => p.category === service.relatedCategory);
+  carouselProjects = [
+    ...categoryMatches.filter((p) => p.featured),
+    ...categoryMatches.filter((p) => !p.featured)
+  ];
+}
+const relatedProjects: Project[] = carouselProjects.slice(0, 3);
+
+const canonicalUrl = `https://antarrarquitectos.com/servicios/${service.slug}`;
+const firstCover = relatedProjects[0]?.coverImage || '/assets/projects/res-2-casa-valencia-1.webp';
+const ogImageUrl = firstCover.startsWith('http')
+  ? firstCover
+  : `https://antarrarquitectos.com${firstCover}`;
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: `${service.title} en Chiclayo`,
+      serviceType: service.title,
+      description: service.seoDescription,
+      url: canonicalUrl,
+      provider: {
+        '@type': 'ProfessionalService',
+        name: 'Antarr Arquitectos',
+        url: 'https://antarrarquitectos.com',
+        telephone: '+51926542501',
+        email: 'info@antarrarquitectos.com',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Chiclayo',
+          addressRegion: 'Lambayeque',
+          addressCountry: 'PE'
+        }
+      },
+      areaServed: [
+        { '@type': 'City', name: 'Chiclayo' },
+        { '@type': 'AdministrativeArea', name: 'Lambayeque' },
+        { '@type': 'Place', name: 'Costa Norte, Perú' }
+      ]
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: service.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer
+        }
+      }))
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Inicio',
+          item: 'https://antarrarquitectos.com/'
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Servicios',
+          item: 'https://antarrarquitectos.com/servicios'
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: service.title,
+          item: canonicalUrl
+        }
+      ]
+    }
+  ]
+};
+
+const currentIndex = SERVICES.findIndex((s) => s.slug === service.slug);
+const prevService = currentIndex > 0 ? SERVICES[currentIndex - 1] : SERVICES[SERVICES.length - 1];
+const nextService = currentIndex < SERVICES.length - 1 ? SERVICES[currentIndex + 1] : SERVICES[0];
+
+const waQuery = encodeURIComponent(
+  `Hola Antarr Arquitectos, me interesa cotizar su servicio de ${service.title}.`
+);
+const waLink = `https://wa.me/51926542501?text=${waQuery}`;
+const formTargetUrl = `/?servicio=${service.slug}#contacto`;
+---
+
+<Layout
+  title={service.seoTitle}
+  description={service.seoDescription}
+  canonical={canonicalUrl}
+  ogImage={ogImageUrl}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
+  <div id="top" class="min-h-screen flex flex-col justify-between bg-transparent">
+    <Navbar />
+
+    <main class="flex-grow pt-28 sm:pt-32 pb-20 sm:pb-28 relative">
+      <div class="max-w-7xl mx-auto px-6 md:px-10">
+        <!-- Franja 1: Cabecera Editorial & Vitrina Fotográfica (Sin Bordes) -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+          <header class="lg:col-span-7 flex flex-col justify-center space-y-4">
+            <div class="badge-canteria w-fit">
+              <span class="w-1.5 h-1.5 bg-clay rounded-none"></span>
+              <span class="font-tech text-xs tracking-widest uppercase font-bold">
+                &middot; SERVICIO {service.number} &middot; {service.subtitle.toUpperCase()}
+              </span>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-display font-light text-carbon tracking-tight leading-[1.12]">
+              {service.h1Prefix}{' '}
+              <span class="font-serif italic font-normal text-[#8C5230] mr-1.5">{service.h1Accent}</span>{' '}
+              {service.h1Suffix}
+            </h1>
+
+            <p class="font-sans text-sm sm:text-[16px] leading-relaxed text-[#57504A] pt-1 font-medium">
+              {service.excerpt}
+            </p>
+
+            <p class="font-sans text-sm sm:text-[16px] leading-relaxed text-[#2C2825] font-normal">
+              {service.description}
+            </p>
+          </header>
+
+          <div class="lg:col-span-5">
+            <div
+              id="service-hero-showcase"
+              class="relative h-[340px] sm:h-[380px] lg:h-[410px] w-full overflow-hidden rounded-sm bg-[#1C1C15] shadow-sm select-none"
+              oncontextmenu="return false;"
+              aria-label={`Obras destacadas de ${service.title}`}
+            >
+              {carouselProjects.map((project, idx) => (
+                <div
+                  class={`service-showcase-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${idx === 0 ? 'opacity-100 z-20' : 'opacity-0 z-0 pointer-events-none'}`}
+                  data-slide-index={idx}
+                  aria-hidden={idx === 0 ? 'false' : 'true'}
+                >
+                  <img
+                    src={project.coverImage}
+                    alt={`${project.typology} - ${project.title} en ${project.location} | Antarr Arquitectos`}
+                    loading={idx === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    draggable="false"
+                    class="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
+                  />
+                  <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div>
+                  <div class="absolute bottom-5 left-5 right-5 z-20">
+                    <a
+                      href={`/proyectos/${project.id}`}
+                      class="inline-block group/link focus:outline-none"
+                    >
+                      <span class="block font-tech text-[11px] tracking-[0.18em] uppercase text-[#F5EBE0]">
+                        {project.location}
+                      </span>
+                      <span class="block font-display text-xl lg:text-2xl font-normal text-white mt-1 group-hover/link:text-[#FBE4C6] transition-colors">
+                        {project.title}
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <!-- Franja 2: Entregables Técnicos (8 cols) & Bloque Caoba Alineado (4 cols) -->
+        <section
+          aria-labelledby="deliverables-heading"
+          class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch mt-14 lg:mt-16"
+        >
+          <div class="lg:col-span-8 flex flex-col">
+            <div class="flex items-center justify-between gap-4 border-t border-carbon/10 pt-6 mb-6">
+              <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-[#8C5230]"></span>
+                <h2 id="deliverables-heading" class="font-tech text-xs uppercase tracking-widest text-carbon font-bold">
+                  Alcance &amp; Entregables Técnicos
+                </h2>
+              </div>
+              <span class="font-mono text-xs text-stone-500">
+                Normativa Peruana (RNE)
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 flex-1">
+              {service.deliverables.map((item, idx) => (
+                <div class="p-5 sm:p-6 rounded-[3px] bg-[#EAE3D8]/90 border-t border-white border-b border-[#3C2D20]/25 shadow-sm flex flex-col justify-start space-y-2">
+                  <span class="font-mono text-xs text-[#8C5230] font-bold block">
+                    0{idx + 1} &mdash; ENTREGABLE
+                  </span>
+                  <h3 class="font-display text-base sm:text-lg text-[#1C1917] font-medium leading-snug">
+                    {item.title}
+                  </h3>
+                  <p class="font-sans text-xs sm:text-[13px] leading-relaxed text-[#2C2825]">
+                    {item.detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <aside class="lg:col-span-4 flex flex-col">
+            <div class="hidden lg:flex items-center justify-between gap-4 border-t border-transparent pt-6 mb-6 invisible select-none pointer-events-none" aria-hidden="true">
+              <span class="font-tech text-xs uppercase tracking-widest font-bold">&nbsp;</span>
+            </div>
+
+            <div class="cta-caoba relative overflow-hidden p-6 sm:p-7 rounded-sm border border-amber-900/40 shadow-[0_12px_32px_rgba(18,10,6,0.22)] flex-1 flex flex-col justify-between gap-6">
+              <div class="space-y-3">
+                <div class="flex items-center gap-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]">
+                  <span class="w-2 h-2 rounded-none bg-[#F5EBE0]"></span>
+                  <span class="font-tech text-xs uppercase tracking-widest text-[#F5EBE0] font-bold">
+                    Cotizar {service.title}
+                  </span>
+                </div>
+
+                <h3 class="font-display text-xl lg:text-2xl font-light text-white tracking-tight drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+                  Evaluación técnica <span class="font-serif italic font-normal text-[#FBE4C6]">a medida</span>
+                </h3>
+
+                <p class="font-sans text-xs sm:text-sm text-[#FAF6F0] leading-relaxed font-normal drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]">
+                  Agenda una evaluación inicial con nuestro equipo directivo y recibe una propuesta de alcance técnico acorde a tu terreno o inmueble.
+                </p>
+              </div>
+
+              <div class="space-y-2.5 pt-2">
+                <a
+                  href={formTargetUrl}
+                  class="inline-flex items-center justify-center w-full py-3 font-tech text-xs tracking-widest uppercase font-bold gap-2 cursor-pointer shadow-sm bg-[#1C1917] hover:bg-[#292524] text-white border border-white/25 rounded-[2px] transition-colors"
+                >
+                  <span>Solicitar Cotización &rarr;</span>
+                </a>
+
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center w-full py-2.5 font-tech text-[11px] tracking-wider uppercase text-white border border-white/80 bg-[#1C1917]/55 hover:bg-[#1C1917]/80 rounded-[2px] transition-colors font-semibold"
+                >
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <!-- Franja 3: Ideal para tu Proyecto a Ancho Completo (12 columnas / 3 tarjetas iguales) -->
+        <section aria-labelledby="ideal-heading" class="w-full mt-14 lg:mt-16 mb-16 sm:mb-20 border-t border-carbon/10 pt-8">
+          <div class="flex items-center gap-2 mb-6">
+            <span class="w-1.5 h-1.5 bg-[#8C5230]"></span>
+            <h2 id="ideal-heading" class="font-tech text-xs uppercase tracking-widest text-carbon font-bold">
+              Ideal para tu Proyecto
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {service.idealFor.map((target, idx) => (
+              <div class="bg-[#F7F4EF]/80 border border-stone-300/80 p-6 lg:p-7 rounded-sm shadow-sm">
+                <span class="block font-mono text-xs tracking-[0.16em] font-medium text-[#8C5230] mb-2">
+                  0{idx + 1}
+                </span>
+                <h3 class="font-display text-base lg:text-lg font-medium text-[#1C1917] leading-snug mb-2.5">
+                  {target.title}
+                </h3>
+                <p class="font-sans text-sm text-[#44403C] leading-relaxed">
+                  {target.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Proyectos Relacionados Extraídos de src/data/projects.ts -->
+        <section aria-labelledby="related-projects-heading" class="border-t border-carbon/15 pt-12 mb-16 sm:mb-20 space-y-8">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div class="space-y-1.5">
+              <span class="font-tech text-[11px] tracking-widest uppercase text-olive font-bold block">
+                Evidencia Proyectual
+              </span>
+              <h2 id="related-projects-heading" class="font-display text-2xl sm:text-3xl text-carbon font-light tracking-tight">
+                Obras relacionadas de <span class="font-serif italic text-[#8C5230]">{service.title}</span>
+              </h2>
+            </div>
+
+            <a
+              href="/proyectos"
+              class="inline-flex items-center gap-2 font-tech text-xs tracking-widest uppercase font-bold text-[#8C5230] hover:underline"
+            >
+              <span>Ver Archivo Completo</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedProjects.map((project) => (
+              <a
+                href={`/proyectos/${project.id}`}
+                class="group flex flex-col rounded-sm overflow-hidden shadow-sm hover:-translate-y-1 transition-all duration-300"
+              >
+                <div
+                  class="relative aspect-[16/10] w-full overflow-hidden rounded-t-sm bg-[#1C1C15]/10 select-none"
+                  oncontextmenu="return false;"
+                >
+                  <img
+                    src={project.coverImage}
+                    alt={`${project.typology} - ${project.title} en ${project.location} | Antarr Arquitectos`}
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                    class="w-full h-full object-cover object-center select-none pointer-events-none transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div class="p-5 bg-[#EAE3D8] border-b border-[#3C2D20]/20 space-y-1.5 flex-grow flex flex-col justify-between">
+                  <div>
+                    <span class="font-tech text-[10px] tracking-widest uppercase text-[#8C5230] font-bold block">
+                      {project.location}
+                    </span>
+                    <h3 class="font-display text-lg text-[#1C1917] font-medium group-hover:text-[#8C5230] transition-colors">
+                      {project.title}
+                    </h3>
+                    <p class="font-sans text-xs text-[#57504A] mt-1 line-clamp-2">
+                      {project.excerpt}
+                    </p>
+                  </div>
+                  <span class="inline-flex items-center gap-1 pt-3 font-tech text-[11px] tracking-wider uppercase text-[#1C1917] font-bold">
+                    <span>Ver Ficha Completa</span>
+                    <span class="text-[#8C5230] group-hover:translate-x-1 transition-transform">&nearr;</span>
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <!-- Acordeón de Preguntas Frecuentes del Servicio -->
+        <section aria-labelledby="service-faq-heading" class="max-w-4xl mx-auto mb-16 sm:mb-20 space-y-6">
+          <div class="text-center space-y-2">
+            <span class="font-tech text-[11px] tracking-widest uppercase text-olive font-bold block">
+              Preguntas Frecuentes
+            </span>
+            <h2 id="service-faq-heading" class="font-display text-2xl sm:text-3xl text-carbon font-light tracking-tight">
+              Dudas sobre <span class="font-serif italic text-[#8C5230]">{service.title}</span>
+            </h2>
+          </div>
+
+          <div class="space-y-3">
+            {service.faqs.map((faq, idx) => (
+              <details
+                class="group rounded-[3px] bg-[#EAE3D8]/90 border-t border-white border-b border-[#3C2D20]/20 shadow-sm"
+                open={idx === 0}
+              >
+                <summary class="flex items-center justify-between gap-4 px-5 sm:px-6 py-4 cursor-pointer list-none font-display text-base sm:text-lg text-carbon font-medium select-none">
+                  <span>{faq.question}</span>
+                  <span class="text-[#8C5230] font-mono text-xl leading-none transition-transform duration-200 group-open:rotate-45 shrink-0">
+                    +
+                  </span>
+                </summary>
+                <div class="px-5 sm:px-6 pb-5 pt-1 font-sans text-sm leading-relaxed text-[#2C2825] border-t border-[#3C2D20]/10">
+                  {faq.answer}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <!-- Banner de Cierre CTA Unificado con Textura Madera Caoba al Natural -->
+        <section class="cta-caoba relative overflow-hidden mb-16 p-7 sm:p-10 rounded-sm border border-amber-900/40 shadow-[0_12px_32px_rgba(18,10,6,0.22)] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div class="relative z-10 space-y-2 max-w-2xl">
+            <div class="flex items-center gap-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]">
+              <span class="w-2 h-2 rounded-none bg-[#F5EBE0]"></span>
+              <span class="font-tech text-[11px] uppercase tracking-widest text-[#F5EBE0] font-bold">
+                &middot; ASESORÍA PROYECTUAL &middot; ANTARR ARQUITECTOS
+              </span>
+            </div>
+            <h2 class="font-display text-2xl sm:text-3xl font-light text-[#FFFFFF] tracking-tight drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+              ¿Listo para concebir tu próximo <span class="font-serif italic font-normal text-[#FBE4C6]">proyecto?</span>
+            </h2>
+            <p class="font-sans text-xs sm:text-sm text-[#FAF6F0] leading-relaxed font-normal drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]">
+              Agenda una evaluación inicial con nuestro equipo directivo y recibe una propuesta de alcance técnico acorde a tu terreno o inmueble.
+            </p>
+          </div>
+
+          <div class="relative z-10 flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto shrink-0">
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 font-tech text-xs tracking-widest uppercase font-bold cursor-pointer w-full sm:w-auto whitespace-nowrap bg-[#1C1917] hover:bg-[#292524] text-white border border-white/25 rounded-[2px] transition-colors shadow-sm"
+            >
+              <span>Consultar por WhatsApp</span>
+              <span>&rarr;</span>
+            </a>
+
+            <a
+              href={formTargetUrl}
+              class="inline-flex items-center justify-center px-6 py-3 font-tech text-xs tracking-wider uppercase w-full sm:w-auto whitespace-nowrap bg-[#1C1917]/55 hover:bg-[#1C1917]/80 border border-white/80 text-white rounded-[2px] transition-colors font-semibold"
+            >
+              Ir al Formulario
+            </a>
+          </div>
+        </section>
+
+        <!-- Navegación entre Especialidades -->
+        <nav aria-label="Navegación entre servicios" class="pt-8 border-t border-carbon/15 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+          <a
+            href={`/servicios/${prevService.slug}`}
+            class="flex items-center gap-3 p-4 rounded-[2px] bg-[#EAE3D8]/50 hover:bg-[#EAE3D8] transition-colors border border-carbon/10 group text-left"
+          >
+            <span class="text-clay text-lg transform group-hover:-translate-x-1 transition-transform">&larr;</span>
+            <div>
+              <span class="font-tech text-[10px] uppercase tracking-widest text-[#5A4D3F] block">Servicio Anterior</span>
+              <span class="font-display text-sm text-carbon font-medium">{prevService.title}</span>
+            </div>
+          </a>
+
+          <a
+            href="/servicios"
+            class="hidden md:inline-flex items-center justify-center px-4 py-2 font-tech text-xs uppercase tracking-widest text-clay hover:underline font-bold"
+          >
+            Todos los Servicios
+          </a>
+
+          <a
+            href={`/servicios/${nextService.slug}`}
+            class="flex items-center justify-end gap-3 p-4 rounded-[2px] bg-[#EAE3D8]/50 hover:bg-[#EAE3D8] transition-colors border border-carbon/10 group text-right"
+          >
+            <div>
+              <span class="font-tech text-[10px] uppercase tracking-widest text-[#5A4D3F] block">Siguiente Servicio</span>
+              <span class="font-display text-sm text-carbon font-medium">{nextService.title}</span>
+            </div>
+            <span class="text-clay text-lg transform group-hover:translate-x-1 transition-transform">&rarr;</span>
+          </a>
+        </nav>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
+
+<script>
+  const showcase = document.getElementById('service-hero-showcase');
+  if (showcase) {
+    const slides = Array.from(showcase.querySelectorAll('.service-showcase-slide'));
+    if (slides.length > 1) {
+      let current = 0;
+
+      window.setInterval(() => {
+        const prev = current;
+        const next = (current + 1) % slides.length;
+        const prevSlide = slides[prev];
+        const nextSlide = slides[next];
+
+        prevSlide.classList.remove('z-20');
+        prevSlide.classList.add('z-10');
+
+        nextSlide.classList.remove('opacity-0', 'z-0', 'pointer-events-none');
+        nextSlide.classList.add('opacity-100', 'z-20');
+        nextSlide.setAttribute('aria-hidden', 'false');
+
+        window.setTimeout(() => {
+          prevSlide.classList.remove('opacity-100', 'z-10');
+          prevSlide.classList.add('opacity-0', 'z-0', 'pointer-events-none');
+          prevSlide.setAttribute('aria-hidden', 'true');
+        }, 1000);
+
+        current = next;
+      }, 4500);
+    }
+  }
+</script>
+
+<style>
+  .cta-caoba {
+    position: relative;
+    overflow: hidden;
+    background-color: #6B4930;
+    background-image: url('/textures/madera-caoba.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

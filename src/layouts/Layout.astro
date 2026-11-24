@@ -1,0 +1,198 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const {
+  title = "Antarr Arquitectos | Estudio de Arquitectura de Autor e Interiorismo en Perú",
+  description = "Estudio de arquitectura de autor e interiorismo con sede central en Chiclayo. Concebimos residencias unifamiliares exclusivas y proyectos comerciales en Lambayeque, La Libertad, Piura, Cajamarca, Amazonas, Tumbes y todo el Perú.",
+  canonical,
+  ogImage = "https://antarrarquitectos.com/assets/projects/res-2-casa-valencia-1.webp"
+} = Astro.props;
+
+const canonicalUrl = canonical || (Astro.url.pathname === '/' ? 'https://antarrarquitectos.com/' : `https://antarrarquitectos.com${Astro.url.pathname.replace(/\/$/, '')}`);
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- OpenGraph / Social Facebook & WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_PE" />
+    <meta property="og:site_name" content="Antarr Arquitectos" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Google Fonts: Plus Jakarta Sans + Space Grotesk + Inter (Optimizadas para FCP) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" 
+      rel="stylesheet" 
+    />
+
+    <!-- Schema.org ArchitecturalFirm & LocalBusiness Structured Data (Territorial & Regional SEO) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": ["ArchitecturalFirm", "LocalBusiness"],
+        "name": "Antarr Arquitectos",
+        "url": "https://antarrarquitectos.com",
+        "telephone": "+51926542501",
+        "email": "info@antarrarquitectos.com",
+        "image": "https://antarrarquitectos.com/assets/logo-antarr-dark.png",
+        "sameAs": [
+          "https://www.instagram.com/antarr_arquitectos/",
+          "https://www.facebook.com/AntarrArquitectos/",
+          "https://www.tiktok.com/@antarr_arquitectos",
+          "https://www.linkedin.com/company/antarr-estudio-arquitect%C3%B3nico/"
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Chiclayo",
+          "addressRegion": "Lambayeque",
+          "addressCountry": "PE"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": -6.7714,
+          "longitude": -79.8409
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:30",
+          "closes": "18:30"
+        },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Lambayeque" },
+          { "@type": "AdministrativeArea", "name": "Tumbes" },
+          { "@type": "AdministrativeArea", "name": "Piura" },
+          { "@type": "AdministrativeArea", "name": "La Libertad" },
+          { "@type": "AdministrativeArea", "name": "Cajamarca" },
+          { "@type": "AdministrativeArea", "name": "Amazonas" },
+          { "@type": "Country", "name": "Perú" }
+        ],
+        "knowsAbout": [
+          "Arquitectura Residencial Unifamiliar",
+          "Edificios Multifamiliares",
+          "Diseño Comercial y Retail",
+          "Diseño de Interiores",
+          "Arquitectura Bioclimática"
+        ],
+        "priceRange": "$$$"
+      }
+    </script>
+  </head>
+  <body class="text-carbon selection:bg-clay selection:text-base antialiased overflow-x-hidden relative" style="background-color: #F6F3EE; background-image: url('/assets/textura-piedra.jpg'); background-repeat: repeat; background-size: 380px auto; background-position: left top; background-attachment: fixed;">
+    <!-- Matiz editorial sutil de 15% para calibrar contraste y legibilidad -->
+    <div class="fixed inset-0 bg-[#FAF8F5]/15 pointer-events-none z-0" aria-hidden="true"></div>
+    
+    <div class="relative z-10 w-full min-h-screen">
+      <div id="top"></div>
+      <slot />
+    </div>
+
+    <!-- Client-side Lenis Smooth Scroll & Image Protection Controller -->
+    <script>
+      import Lenis from 'lenis';
+
+      const lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 0.95,
+      });
+
+      // Expose globally for modals
+      (window as any).lenis = lenis;
+
+      function raf(time: number) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Smooth anchor scrolling calibrado al ras exacto de la barra de navegación (80px)
+      document.querySelectorAll('a[href^="#"], a[href^="/#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          const href = anchor.getAttribute('href');
+          if (!href) return;
+          const isHome = window.location.pathname === '/' || window.location.pathname === '';
+          if (href === '#top' || href === '/#top') {
+            if (isHome) {
+              e.preventDefault();
+              lenis.scrollTo(0, { duration: 1.2 });
+              return;
+            }
+          }
+          const hash = href.startsWith('/#') ? href.slice(1) : href;
+          if (hash && hash !== '#' && hash.startsWith('#')) {
+            if (isHome) {
+              const target = document.querySelector(hash) as HTMLElement | null;
+              if (target) {
+                e.preventDefault();
+                // Cálculo matemático exacto: posición absoluta del elemento menos 80px del navbar
+                const targetY = target.getBoundingClientRect().top + window.scrollY - 80;
+                lenis.scrollTo(targetY, { duration: 1.1 });
+                history.pushState(null, '', hash);
+              }
+            }
+          }
+        });
+      });
+
+      // Posicionamiento preciso al cargar página con ancla en URL (soporta #contacto?servicio=...)
+      if (window.location.hash) {
+        const cleanHash = window.location.hash.split('?')[0];
+        const hashTarget = cleanHash ? (document.querySelector(cleanHash) as HTMLElement | null) : null;
+        if (hashTarget) {
+          setTimeout(() => {
+            const targetY = hashTarget.getBoundingClientRect().top + window.scrollY - 80;
+            lenis.scrollTo(targetY, { immediate: true });
+          }, 100);
+        }
+      }
+
+      // Inhabilitación de clic derecho sobre todas las imágenes del sitio
+      document.addEventListener('contextmenu', (e) => {
+        const target = e.target as HTMLElement;
+        if (target && (target.tagName === 'IMG' || target.tagName === 'VIDEO' || target.closest('img, video, .project-card, #modal-main-img, #modal-thumbs'))) {
+          e.preventDefault();
+        }
+      });
+
+      // Inhabilitación de arrastre nativo de archivos multimedia
+      document.addEventListener('dragstart', (e) => {
+        const target = e.target as HTMLElement;
+        if (target && (target.tagName === 'IMG' || target.tagName === 'VIDEO')) {
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
+</html>

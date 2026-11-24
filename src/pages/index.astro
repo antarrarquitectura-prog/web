@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import Manifesto from '../components/Manifesto.astro';
+import PortfolioGrid from '../components/PortfolioGrid.astro';
+import Methodology from '../components/Methodology.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <div id="top" class="min-h-screen flex flex-col justify-between">
+    <Navbar />
+    
+    <main id="main-content" class="flex-grow w-full">
+      <Hero />
+      <Manifesto />
+      <PortfolioGrid />
+      <Methodology />
+      <LeadForm />
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

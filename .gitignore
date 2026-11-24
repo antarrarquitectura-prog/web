@@ -1,0 +1,23 @@
+# Dependencies & build output
+node_modules/
+dist/
+.astro/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+
+# Local working, reference, and media assets
+brain/
+scratch/
+TEXTURAS/
+VISUALIZACIÓN PROYECTOS/
+/*.mp4
+/*.docx
+/*.pdf
+/*.txt

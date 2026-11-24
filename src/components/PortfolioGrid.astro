@@ -1,0 +1,416 @@
+---
+import { PROJECTS } from '../data/projects';
+import ProjectModal from './ProjectModal.astro';
+
+// Only featured projects are displayed on Home (strictly 9 projects: 3 per typology)
+const featuredProjects = PROJECTS.filter(p => p.featured);
+
+const getCategoryKey = (category: string) => {
+  if (category === 'Residencial') return 'residencial';
+  if (category === 'Diseño Comercial') return 'comercial';
+  if (category === 'Diseño de Interiores') return 'interiores';
+  return 'residencial';
+};
+
+const getMarbleStyle = (index: number) => {
+  return `background-position: ${(index * 137) % 550}px ${(index * 89) % 400}px;`;
+};
+---
+
+<section 
+  id="proyectos" 
+  class="w-full scroll-mt-24 pt-12 sm:pt-16 pb-16 sm:pb-24 border-b border-hairline relative bg-transparent overflow-hidden"
+>
+  <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-10 space-y-10 sm:space-y-12">
+    
+    <!-- Section Header Editorial con Apliques Escultóricos Flanqueando la Cabecera -->
+    <div class="relative border-b border-carbon/10 pb-6 header-editorial">
+      
+      <!-- Aplique Escultórico Izquierdo (Piedra Alabastro / Ónix Iluminado) -->
+      <div 
+        class="sconce-container hidden md:block absolute left-0 lg:left-1 xl:left-2 bottom-6 select-none z-10"
+        aria-hidden="true"
+      >
+        <!-- Halo radial difuso de luz cálida ámbar 2700K sobre el muro de estuco -->
+        <div class="sconce-aura" aria-hidden="true"></div>
+        <img 
+          src="/assets/lampara-izquierda.png" 
+          alt="Aplique de pared escultórico de piedra y alabastro iluminado" 
+          class="sconce-editorial object-contain block relative z-10"
+          style="height: 165px; width: auto;"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+
+      <div class="space-y-2 max-w-xl sm:max-w-2xl mx-auto text-center flex flex-col items-center">
+        <div class="badge-canteria mx-auto">
+          <span class="w-1.5 h-1.5 bg-clay rounded-none"></span>
+          <span class="font-tech text-xs tracking-widest uppercase font-bold">
+            • 02 &mdash; SELECCIÓN EDITORIAL &middot; ANTARR ARQUITECTOS
+          </span>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl text-carbon tracking-tight font-light text-center">
+          Obras Destacadas
+        </h2>
+        <p class="font-sans text-xs sm:text-sm leading-relaxed font-normal text-center mx-auto" style="color: #2D2B28 !important; opacity: 1 !important;">
+          Una muestra curada de nuestras 9 obras insignia que sintetizan nuestro rigor constructivo, sensibilidad matérica y confort bioclimático en proyectos residenciales, comerciales y de interiores.
+        </p>
+      </div>
+
+      <!-- Aplique Escultórico Derecho (Cerámica Pétalo Orgánico Iluminado) -->
+      <div 
+        class="sconce-container hidden md:block absolute right-0 lg:right-1 xl:right-2 bottom-6 select-none z-10"
+        aria-hidden="true"
+      >
+        <!-- Halo radial difuso de luz cálida ámbar 2700K sobre el muro de estuco -->
+        <div class="sconce-aura" aria-hidden="true"></div>
+        <img 
+          src="/assets/lampara-derecha.png" 
+          alt="Aplique de pared orgánico pétalo de cerámica y pátina iluminado" 
+          class="sconce-editorial object-contain block relative z-10"
+          style="height: 165px; width: auto;"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </div>
+
+    <!-- Filtros de Tipología Arquitectónica (Placas de Muestrario / Fichas de Taller) con mb-12 -->
+    <div class="flex flex-wrap justify-center items-center gap-2.5 sm:gap-3 mx-auto mb-12">
+      <button 
+        type="button" 
+        data-filter="residencial"
+        class="portfolio-filter-btn active btn-terracota px-5 py-2 text-xs tracking-wider uppercase font-medium cursor-pointer transition-all duration-200"
+      >
+        Residencial
+      </button>
+      <button 
+        type="button" 
+        data-filter="comercial"
+        class="portfolio-filter-btn bg-[#EAE3D8] hover:bg-[#E2D9CC] text-[#3D3328] rounded-[2px] px-5 py-2 text-xs tracking-wider uppercase font-medium border border-[#D5CABE] shadow-[inset_0_1px_1px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200"
+      >
+        Comercial
+      </button>
+      <button 
+        type="button" 
+        data-filter="interiores"
+        class="portfolio-filter-btn bg-[#EAE3D8] hover:bg-[#E2D9CC] text-[#3D3328] rounded-[2px] px-5 py-2 text-xs tracking-wider uppercase font-medium border border-[#D5CABE] shadow-[inset_0_1px_1px_rgba(0,0,0,0.06)] cursor-pointer transition-all duration-200"
+      >
+        Diseño de Interiores
+      </button>
+    </div>
+
+    <!-- Editorial Dossier Grid: Mosaico a 2 Columnas sobre Placas de Mármol con Crossfade Suave -->
+    <div id="featured-dossier-grid" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+      {featuredProjects.map((project, cardIndex) => {
+        const catKey = getCategoryKey(project.category);
+        const categoryProjects = featuredProjects.filter(p => getCategoryKey(p.category) === catKey);
+        const indexInCategory = categoryProjects.findIndex(p => p.id === project.id);
+        const isOddLast = indexInCategory === categoryProjects.length - 1 && categoryProjects.length % 2 !== 0;
+        const previewImages = project.gallery.slice(0, 3);
+        const isInitialVisible = catKey === 'residencial';
+
+        return (
+          <article 
+            class={`featured-card group flex flex-col cursor-pointer ${isOddLast ? 'md:col-span-2' : ''} ${isInitialVisible ? '' : 'hidden'}`}
+            data-project-id={project.id}
+            data-category={catKey}
+          >
+            <!-- Render a sangre en la parte superior sin bordes laterales ni superior -->
+            <div 
+              class={`crossfade-container relative w-full ${isOddLast ? 'h-[360px] sm:h-[400px] md:h-[440px]' : 'aspect-[4/5]'} overflow-hidden bg-[#1c1c15] shadow-sm mb-[-1px]`}
+              data-card-index={cardIndex}
+            >
+              {previewImages.map((imgSrc, imgIdx) => (
+                <img 
+                  src={imgSrc} 
+                  alt={`${project.typology || project.category} - ${project.title} en ${project.location} | Antarr Arquitectos - Vista ${imgIdx + 1}`}
+                  loading={cardIndex < 2 && imgIdx === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  width="800"
+                  height="1000"
+                  class={`crossfade-img absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-out group-hover:scale-105 ${imgIdx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                  style={imgIdx === 0 ? "opacity: 1 !important; display: block !important;" : "display: block !important;"}
+                  data-img-index={imgIdx}
+                />
+              ))}
+              <!-- Gradiente sutil al hacer hover -->
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none"></div>
+            </div>
+
+            <!-- Zócalo Inferior de Mármol con Información Técnica & Botón Descúbrelo -->
+            <div 
+              class="project-info-plaque relative z-10 flex-1 flex items-baseline justify-between gap-4"
+              style={getMarbleStyle(cardIndex)}
+            >
+              <div>
+                <h3 class="font-tech text-xs tracking-widest uppercase text-[#1C1C15] font-bold">
+                  {project.title} / {project.location}
+                </h3>
+                <p class="font-sans text-[11px] text-[#2D2D23]/85 mt-0.5 font-normal">
+                  {project.areaBuilt ? `${project.typology} · ${project.areaBuilt}` : project.typology}
+                </p>
+              </div>
+              
+              <a 
+                href={`/proyectos/${project.id}`}
+                class="open-modal-trigger font-tech text-xs tracking-widest uppercase text-clay group-hover:text-ochre transition-colors font-bold flex items-center gap-1.5 cursor-pointer whitespace-nowrap py-0.5"
+                data-project-id={project.id}
+                title={`Ver detalles de ${project.title}`}
+              >
+                <span class="relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1.5px] after:bg-clay group-hover:after:bg-ochre after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left">
+                  DESCÚBRELO
+                </span>
+                <span class="text-sm transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <!-- Acceso al Catálogo General -->
+    <div class="pt-6 sm:pt-8 text-center">
+      <a 
+        href="/proyectos" 
+        class="inline-flex items-center gap-2 px-8 py-3.5 border border-[#3C2D20]/25 text-carbon bg-[#EAE3D8] hover:bg-[#1E1914] hover:text-[#FAF6F0] rounded-[3px] border-t border-white/70 border-b border-[#3C2D20]/30 shadow-[0_2px_4px_rgba(35,28,20,0.08)] transition-all duration-300 text-xs tracking-widest uppercase font-tech font-semibold cursor-pointer"
+      >
+        Explorar Catálogo Completo &rarr;
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Shared Project Modal -->
+  <ProjectModal />
+</section>
+
+<style>
+  .featured-card {
+    background-color: #D9DCDD;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 4px 6px -1px rgba(35, 28, 20, 0.12),
+      0 16px 32px -4px rgba(35, 28, 20, 0.14);
+    transition: transform 0.35s ease-out, box-shadow 0.35s ease-out;
+  }
+  .featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 8px 14px -2px rgba(35, 28, 20, 0.16),
+      0 22px 38px -4px rgba(35, 28, 20, 0.18);
+  }
+  .project-info-plaque {
+    flex: 1 1 auto;
+    width: 100%;
+    background-image: url('/assets/marmol-placa.jpg');
+    background-color: #D9DCDD;
+    background-size: 550px auto;
+    background-repeat: repeat;
+    image-rendering: -webkit-optimize-contrast;
+    margin-top: 0;
+    padding: 1.1rem 1.25rem 1.25rem 1.25rem;
+    border: none;
+    box-shadow: none;
+  }
+</style>
+
+<script>
+  // Filter switching logic for workshop-style swatches
+  const filterBtns = document.querySelectorAll('.portfolio-filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.featured-card');
+
+  const ACTIVE_CLASSES = ['active', 'btn-terracota'];
+  const INACTIVE_CLASSES = ['bg-[#EAE3D8]', 'hover:bg-[#E2D9CC]', 'text-[#3D3328]', 'border', 'border-[#D5CABE]', 'shadow-[inset_0_1px_1px_rgba(0,0,0,0.06)]'];
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetCategory = btn.getAttribute('data-filter');
+      if (!targetCategory) return;
+
+      // Update button visual states
+      filterBtns.forEach(b => {
+        if (b === btn) {
+          b.classList.remove(...INACTIVE_CLASSES);
+          b.classList.add(...ACTIVE_CLASSES);
+        } else {
+          b.classList.remove(...ACTIVE_CLASSES);
+          b.classList.add(...INACTIVE_CLASSES);
+        }
+      });
+
+      // Filter cards
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        if (cardCategory === targetCategory) {
+          card.classList.remove('hidden');
+          card.classList.add('flex');
+
+          // Ensure first image is immediately visible
+          const firstImg = card.querySelector<HTMLImageElement>('.crossfade-container img:first-of-type');
+          if (firstImg) {
+            firstImg.style.setProperty('opacity', '1', 'important');
+            firstImg.style.setProperty('display', 'block', 'important');
+          }
+        } else {
+          card.classList.add('hidden');
+          card.classList.remove('flex');
+        }
+      });
+    });
+  });
+
+  // Automatic slow crossfade for card image previews
+  const containers = document.querySelectorAll('.crossfade-container');
+
+  containers.forEach((container, idx) => {
+    const images = container.querySelectorAll<HTMLImageElement>('.crossfade-img');
+    if (images.length <= 1) return;
+
+    let activeIndex = 0;
+    const staggerDelay = (idx % 3) * 1200;
+
+    setTimeout(() => {
+      setInterval(() => {
+        const parentCard = container.closest('.featured-card');
+        if (parentCard && parentCard.classList.contains('hidden')) return;
+
+        const nextIndex = (activeIndex + 1) % images.length;
+        
+        if (nextIndex === 0) {
+          images.forEach((img, i) => {
+            if (i > 0) {
+              img.classList.remove('opacity-100', 'z-20');
+              img.classList.add('opacity-0', 'z-0');
+            }
+          });
+        } else {
+          images[nextIndex].classList.remove('opacity-0', 'z-0');
+          images[nextIndex].classList.add('opacity-100', 'z-20');
+
+          if (activeIndex > 0) {
+            images[activeIndex].classList.remove('opacity-100', 'z-20');
+            images[activeIndex].classList.add('opacity-0', 'z-0');
+          }
+        }
+
+        activeIndex = nextIndex;
+      }, 4500);
+    }, staggerDelay);
+  });
+
+  // Clicking on item or DESCÚBRELO trigger opens modal
+  const openModal = (projectId: string) => {
+    const event = new CustomEvent('open-project-modal', { detail: { projectId } });
+    window.dispatchEvent(event);
+  };
+
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      const mouseEvent = e as MouseEvent;
+      // Permite navegación nativa si el usuario presiona Ctrl, Cmd o botón central
+      if (mouseEvent.ctrlKey || mouseEvent.metaKey || mouseEvent.button === 1) {
+        return;
+      }
+      e.preventDefault();
+      const projectId = card.getAttribute('data-project-id');
+      if (projectId) openModal(projectId);
+    });
+  });
+</script>
+
+<style>
+  /* ==========================================================================
+     INTERACCIÓN LUMÍNICA Y AURA ESCULTÓRICA - APLIQUES DE PARED
+     ========================================================================== */
+  .sconce-container {
+    pointer-events: auto;
+    cursor: default;
+  }
+
+  /* Halo radial difuso de luz cálida ámbar 2700K sobre el estuco */
+  .sconce-aura {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 215, 160, 0.45) 0%, rgba(235, 180, 110, 0.20) 45%, transparent 70%);
+    filter: blur(20px);
+    opacity: 0.35;
+    pointer-events: none;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .sconce-editorial {
+    height: 165px !important;
+    width: auto !important;
+    max-height: none !important;
+    max-width: none !important;
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.12));
+    transition: filter 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s ease-out;
+    transform: scale(1);
+    will-change: filter, transform;
+  }
+
+  /* Interacción lumínica progresiva al cursor (Desktop / Mouse) */
+  @media (hover: hover) and (pointer: fine) {
+    /* Nivel 1: Cursor sobre la cabecera editorial de Obras Destacadas */
+    .header-editorial:hover .sconce-aura {
+      opacity: 0.65;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+    .header-editorial:hover .sconce-editorial {
+      filter: drop-shadow(0 0 20px rgba(235, 180, 110, 0.30)) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.15));
+      transform: scale(1.008);
+    }
+
+    /* Nivel 2: Hover directo sobre cada aplique individual (Bloom completo y relieve óptico) */
+    .header-editorial .sconce-container:hover .sconce-aura {
+      opacity: 0.95;
+      transform: translate(-50%, -50%) scale(1.22);
+    }
+    .header-editorial .sconce-container:hover .sconce-editorial {
+      filter: drop-shadow(0 0 35px rgba(235, 180, 110, 0.45)) drop-shadow(0 20px 30px rgba(0, 0, 0, 0.18));
+      transform: scale(1.015);
+    }
+  }
+
+  /* Comportamiento estático acogedor en dispositivos táctiles sin hover */
+  @media (hover: none) {
+    .sconce-aura {
+      opacity: 0.60;
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+    .sconce-editorial {
+      filter: drop-shadow(0 0 20px rgba(235, 180, 110, 0.28)) drop-shadow(0 16px 26px rgba(0, 0, 0, 0.14));
+      transform: scale(1);
+    }
+  }
+
+  /* Reducción de movimiento */
+  @media (prefers-reduced-motion: reduce) {
+    .sconce-editorial,
+    .sconce-aura {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .sconce-editorial {
+      height: 145px !important;
+    }
+    .sconce-aura {
+      width: 130px;
+      height: 130px;
+    }
+  }
+</style>
