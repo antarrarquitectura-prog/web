@@ -18,45 +18,83 @@ interface Props {
 const { project } = Astro.props;
 
 // Canonical and dynamic SEO values
-const canonicalUrl = `https://antarrarquitectos.com/proyectos/${project.id}`;
-const pageTitle = `${project.title} | ${project.typology} en ${project.location} · Antarr Arquitectos`;
-const pageDescription = project.excerpt 
-  ? `${project.excerpt} Proyecto de ${project.typology} en ${project.location} diseñado por Antarr Arquitectos.`
-  : `Memoria descriptiva y planos de ${project.title}, ${project.typology} en ${project.location}. Estudio de arquitectura de autor Antarr Arquitectos.`;
+const SITE_URL = 'https://www.antarrarquitectos.com';
+const canonicalUrl = `${SITE_URL}/proyectos/${project.id}`;
+const shortLocation = project.location.split(',')[0].trim();
+const categoryLabel = project.category === 'Residencial' ? 'Arquitectura Residencial' : project.category;
+const pageTitle = `${project.title} | ${categoryLabel} en ${shortLocation} · Antarr Arquitectos`;
+const rawDescription = project.excerpt 
+  ? `${project.excerpt} Proyecto de ${project.typology} en ${project.location} por Antarr Arquitectos.`
+  : `Memoria descriptiva y vistas de ${project.title}, ${project.typology} en ${project.location}. Estudio de arquitectura Antarr Arquitectos.`;
+const pageDescription = rawDescription.length > 160 ? `${rawDescription.slice(0, 157).trim()}...` : rawDescription;
 
 const ogImageUrl = project.coverImage.startsWith('http') 
   ? project.coverImage 
-  : `https://antarrarquitectos.com${project.coverImage}`;
+  : `${SITE_URL}${project.coverImage}`;
+const ogImageAlt = `${project.title} - ${project.typology} en ${project.location} | Antarr Arquitectos`;
 
-// Structured Data Schema.org
+// Enlace al servicio pilar correspondiente (silo temático SEO)
+const relatedService =
+  project.category === 'Diseño Comercial'
+    ? { slug: 'diseno-comercial', label: 'Arquitectura y Diseño Comercial' }
+    : project.category === 'Diseño de Interiores'
+      ? { slug: 'diseno-de-interiores', label: 'Diseño de Interiores' }
+      : { slug: 'diseno-residencial', label: 'Diseño Residencial' };
+
+// Structured Data Schema.org (CreativeWork válido + BreadcrumbList)
 const projectSchema = {
   "@context": "https://schema.org",
-  "@type": project.category === 'Residencial' ? "SingleFamilyResidence" : "CreativeWork",
-  "name": `${project.title} - Antarr Arquitectos`,
-  "headline": `${project.title} | ${project.typology} en ${project.location}`,
-  "description": project.description,
-  "image": project.gallery.map(img => img.startsWith('http') ? img : `https://antarrarquitectos.com${img}`),
-  "author": {
-    "@type": "ArchitecturalFirm",
-    "name": "Antarr Arquitectos",
-    "url": "https://antarrarquitectos.com"
-  },
-  "creator": {
-    "@type": "ArchitecturalFirm",
-    "name": "Antarr Arquitectos"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": project.location,
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": project.location.split(',')[0].trim(),
-      "addressRegion": project.location.split(',')[1]?.trim() || "Perú",
-      "addressCountry": "PE"
+  "@graph": [
+    {
+      "@type": "CreativeWork",
+      "@id": `${canonicalUrl}#project`,
+      "url": canonicalUrl,
+      "name": `${project.title} - Antarr Arquitectos`,
+      "headline": `${project.title} | ${project.typology} en ${project.location}`,
+      "description": project.description,
+      "genre": categoryLabel,
+      "inLanguage": "es-PE",
+      "image": project.gallery.map(img => img.startsWith('http') ? img : `${SITE_URL}${img}`),
+      "author": { "@id": `${SITE_URL}/#organization` },
+      "creator": { "@id": `${SITE_URL}/#organization` },
+      "publisher": { "@id": `${SITE_URL}/#organization` },
+      "contentLocation": {
+        "@type": "Place",
+        "name": project.location,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": shortLocation,
+          "addressRegion": project.location.split(',')[1]?.trim() || "Perú",
+          "addressCountry": "PE"
+        }
+      },
+      "spatialCoverage": project.location,
+      ...(project.year ? { "temporalCoverage": project.year } : {})
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": `${SITE_URL}/`
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Proyectos",
+          "item": `${SITE_URL}/proyectos`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": project.title,
+          "item": canonicalUrl
+        }
+      ]
     }
-  },
-  "spatialCoverage": project.location,
-  ...(project.year ? { "temporalCoverage": project.year } : {})
+  ]
 };
 
 const isInteriors = project.category === 'Diseño de Interiores';
@@ -109,6 +147,7 @@ const coverLightboxIndex = Math.max(0, lightboxImages.indexOf(project.coverImage
   description={pageDescription}
   canonical={canonicalUrl}
   ogImage={ogImageUrl}
+  ogImageAlt={ogImageAlt}
 >
   <!-- Schema.org específico de la obra arquitectónica -->
   <script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
@@ -353,10 +392,17 @@ const coverLightboxIndex = Math.max(0, lightboxImages.indexOf(project.coverImage
                 </a>
 
                 <a 
-                  href="/#contacto" 
+                  href={`/?servicio=${relatedService.slug}#contacto`} 
                   class="inline-flex items-center justify-center w-full py-2 font-tech text-[11px] tracking-wider uppercase text-stone-300 hover:text-white border border-stone-600/60 hover:border-stone-400 rounded-[2px] transition-colors"
                 >
                   Solicitar Cotización
+                </a>
+
+                <a
+                  href={`/servicios/${relatedService.slug}`}
+                  class="inline-flex items-center justify-center w-full py-1.5 font-tech text-[10px] tracking-widest uppercase text-[#FBE4C6] hover:text-white transition-colors"
+                >
+                  Ver servicio de {relatedService.label} &rarr;
                 </a>
               </div>
             </div>

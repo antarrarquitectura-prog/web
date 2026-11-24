@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Página no encontrada | Antarr Arquitectos"
+  description="La página que buscas no está disponible. Explora los servicios de arquitectura, diseño de interiores y proyectos de Antarr Arquitectos."
+  robots="noindex, follow"
+>
+  <div class="min-h-screen flex flex-col justify-between bg-transparent">
+    <Navbar />
+
+    <main class="flex-grow flex items-center justify-center pt-28 pb-20 px-6 md:px-10">
+      <div class="max-w-2xl mx-auto text-center space-y-6">
+        <div class="badge-canteria mx-auto">
+          <span class="w-1.5 h-1.5 bg-clay rounded-none"></span>
+          <span class="font-tech text-xs tracking-widest uppercase font-bold">
+            &middot; ERROR 404 &middot; ANTARR ARQUITECTOS
+          </span>
+        </div>
+
+        <h1 class="font-display text-3xl sm:text-5xl font-light text-carbon tracking-tight leading-tight">
+          No encontramos la <span class="font-serif italic text-[#8C5230]">página solicitada.</span>
+        </h1>
+
+        <p class="font-sans text-sm sm:text-base text-[#57504A] leading-relaxed">
+          Es posible que el enlace haya cambiado tras nuestra actualización web. Puedes explorar nuestro estudio de arquitectura y diseño de interiores desde las secciones principales.
+        </p>
+
+        <div class="pt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <a
+            href="/"
+            class="btn-terracota inline-flex items-center justify-center gap-2 px-6 py-3 font-tech text-xs tracking-widest uppercase font-bold"
+          >
+            <span>Ir al Inicio</span>
+            <span>&rarr;</span>
+          </a>
+          <a
+            href="/servicios"
+            class="inline-flex items-center justify-center px-6 py-3 font-tech text-xs tracking-widest uppercase font-semibold bg-[#EAE3D8] hover:bg-[#E2D9CC] text-carbon border border-carbon/15 rounded-[2px] transition-colors"
+          >
+            Ver Servicios
+          </a>
+          <a
+            href="/proyectos"
+            class="inline-flex items-center justify-center px-6 py-3 font-tech text-xs tracking-widest uppercase font-semibold bg-[#EAE3D8] hover:bg-[#E2D9CC] text-carbon border border-carbon/15 rounded-[2px] transition-colors"
+          >
+            Ver Proyectos
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

@@ -6,30 +6,178 @@ interface Props {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  robots?: string;
+  preloadHero?: boolean;
 }
 
+const SITE_URL = 'https://www.antarrarquitectos.com';
+
 const {
-  title = "Antarr Arquitectos | Estudio de Arquitectura de Autor e Interiorismo en Perú",
-  description = "Estudio de arquitectura de autor e interiorismo con sede central en Chiclayo. Concebimos residencias unifamiliares exclusivas y proyectos comerciales en Lambayeque, La Libertad, Piura, Cajamarca, Amazonas, Tumbes y todo el Perú.",
+  title = "Estudio de Arquitectura y Diseño de Interiores | Antarr Arquitectos",
+  description = "Estudio de arquitectura y diseño de interiores en Chiclayo y todo el Perú. Arquitectos especialistas en casas, locales comerciales, planos ejecutivos y 3D.",
   canonical,
-  ogImage = "https://antarrarquitectos.com/assets/projects/res-2-casa-valencia-1.webp"
+  ogImage = `${SITE_URL}/assets/projects/res-2-casa-valencia-1.webp`,
+  ogImageAlt = "Antarr Arquitectos - Estudio de arquitectura y diseño de interiores en Perú",
+  robots = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+  preloadHero = false
 } = Astro.props;
 
-const canonicalUrl = canonical || (Astro.url.pathname === '/' ? 'https://antarrarquitectos.com/' : `https://antarrarquitectos.com${Astro.url.pathname.replace(/\/$/, '')}`);
+const cleanPath = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/$/, '');
+const canonicalUrl = canonical || `${SITE_URL}${cleanPath}`;
+
+const globalSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["ArchitecturalFirm", "LocalBusiness"],
+      "@id": `${SITE_URL}/#organization`,
+      "name": "Antarr Arquitectos",
+      "alternateName": "Antarr Estudio de Arquitectura y Diseño de Interiores",
+      "description": "Estudio de arquitectura y diseño de interiores en Chiclayo, Pimentel y todo el Perú. Especialistas en arquitectura residencial, edificios multifamiliares, diseño comercial e interiorismo a medida.",
+      "url": SITE_URL,
+      "telephone": "+51926542501",
+      "email": "info@antarrarquitectos.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${SITE_URL}/assets/logo-antarr-dark.png`
+      },
+      "image": [
+        `${SITE_URL}/assets/projects/res-2-casa-valencia-1.webp`,
+        `${SITE_URL}/assets/logo-antarr-dark.png`
+      ],
+      "sameAs": [
+        "https://www.instagram.com/antarr_arquitectos/",
+        "https://www.facebook.com/AntarrArquitectos/",
+        "https://www.tiktok.com/@antarr_arquitectos",
+        "https://www.linkedin.com/company/antarr-estudio-arquitect%C3%B3nico/"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Carretera a Pimentel Km 6.2",
+        "addressLocality": "Pimentel, Chiclayo",
+        "addressRegion": "Lambayeque",
+        "postalCode": "14001",
+        "addressCountry": "PE"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -6.7985,
+        "longitude": -79.8862
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "08:30",
+          "closes": "18:30"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Saturday"],
+          "opens": "09:00",
+          "closes": "13:00"
+        }
+      ],
+      "areaServed": [
+        { "@type": "City", "name": "Chiclayo" },
+        { "@type": "City", "name": "Pimentel" },
+        { "@type": "AdministrativeArea", "name": "Lambayeque" },
+        { "@type": "AdministrativeArea", "name": "La Libertad" },
+        { "@type": "AdministrativeArea", "name": "Piura" },
+        { "@type": "AdministrativeArea", "name": "Cajamarca" },
+        { "@type": "AdministrativeArea", "name": "Tumbes" },
+        { "@type": "AdministrativeArea", "name": "Amazonas" },
+        { "@type": "City", "name": "Lima" },
+        { "@type": "Country", "name": "Perú" }
+      ],
+      "knowsAbout": [
+        "Estudio de Arquitectura",
+        "Arquitectos en Perú",
+        "Arquitectura Residencial Unifamiliar",
+        "Edificios Multifamiliares",
+        "Arquitectura y Diseño Comercial",
+        "Diseño de Interiores",
+        "Interiorismo Residencial y Comercial",
+        "Arquitectura Bioclimática",
+        "Planos Arquitectónicos y Ejecutivos",
+        "Modelado 3D y Renders Fotorrealistas"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de Arquitectura y Diseño de Interiores",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diseño Residencial y Arquitectura de Casas",
+              "url": `${SITE_URL}/servicios/diseno-residencial`
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diseño Multifamiliar y Edificios",
+              "url": `${SITE_URL}/servicios/diseno-multifamiliar`
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Arquitectura y Diseño Comercial",
+              "url": `${SITE_URL}/servicios/diseno-comercial`
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diseño de Interiores",
+              "url": `${SITE_URL}/servicios/diseno-de-interiores`
+            }
+          }
+        ]
+      },
+      "priceRange": "$$$"
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      "url": `${SITE_URL}/`,
+      "name": "Antarr Arquitectos",
+      "alternateName": "Antarr Estudio de Arquitectura",
+      "inLanguage": "es-PE",
+      "publisher": {
+        "@id": `${SITE_URL}/#organization`
+      }
+    }
+  ]
+};
 ---
 
 <!doctype html>
-<html lang="es" class="scroll-smooth">
+<html lang="es-PE" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#F6F3EE" />
     <meta name="generator" content={Astro.generator} />
     
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
     
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="es-PE" href={canonicalUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
+
+    {preloadHero && (
+      <link rel="preload" as="image" href="/assets/hero-valencia-poster.jpg" media="(max-width: 767px)" fetchpriority="high" />
+    )}
     
     <!-- OpenGraph / Social Facebook & WhatsApp -->
     <meta property="og:type" content="website" />
@@ -39,12 +187,14 @@ const canonicalUrl = canonical || (Astro.url.pathname === '/' ? 'https://antarra
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogImageAlt} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <!-- Google Fonts: Plus Jakarta Sans + Space Grotesk + Inter (Optimizadas para FCP) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -54,58 +204,8 @@ const canonicalUrl = canonical || (Astro.url.pathname === '/' ? 'https://antarra
       rel="stylesheet" 
     />
 
-    <!-- Schema.org ArchitecturalFirm & LocalBusiness Structured Data (Territorial & Regional SEO) -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": ["ArchitecturalFirm", "LocalBusiness"],
-        "name": "Antarr Arquitectos",
-        "url": "https://antarrarquitectos.com",
-        "telephone": "+51926542501",
-        "email": "info@antarrarquitectos.com",
-        "image": "https://antarrarquitectos.com/assets/logo-antarr-dark.png",
-        "sameAs": [
-          "https://www.instagram.com/antarr_arquitectos/",
-          "https://www.facebook.com/AntarrArquitectos/",
-          "https://www.tiktok.com/@antarr_arquitectos",
-          "https://www.linkedin.com/company/antarr-estudio-arquitect%C3%B3nico/"
-        ],
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Chiclayo",
-          "addressRegion": "Lambayeque",
-          "addressCountry": "PE"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": -6.7714,
-          "longitude": -79.8409
-        },
-        "openingHoursSpecification": {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "08:30",
-          "closes": "18:30"
-        },
-        "areaServed": [
-          { "@type": "AdministrativeArea", "name": "Lambayeque" },
-          { "@type": "AdministrativeArea", "name": "Tumbes" },
-          { "@type": "AdministrativeArea", "name": "Piura" },
-          { "@type": "AdministrativeArea", "name": "La Libertad" },
-          { "@type": "AdministrativeArea", "name": "Cajamarca" },
-          { "@type": "AdministrativeArea", "name": "Amazonas" },
-          { "@type": "Country", "name": "Perú" }
-        ],
-        "knowsAbout": [
-          "Arquitectura Residencial Unifamiliar",
-          "Edificios Multifamiliares",
-          "Diseño Comercial y Retail",
-          "Diseño de Interiores",
-          "Arquitectura Bioclimática"
-        ],
-        "priceRange": "$$$"
-      }
-    </script>
+    <!-- Schema.org ArchitecturalFirm, LocalBusiness & WebSite Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(globalSchema)} />
   </head>
   <body class="text-carbon selection:bg-clay selection:text-base antialiased overflow-x-hidden relative" style="background-color: #F6F3EE; background-image: url('/assets/textura-piedra.jpg'); background-repeat: repeat; background-size: 380px auto; background-position: left top; background-attachment: fixed;">
     <!-- Matiz editorial sutil de 15% para calibrar contraste y legibilidad -->

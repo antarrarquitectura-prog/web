@@ -6,7 +6,8 @@ export default defineConfig({
   integrations: [tailwind({
     applyBaseStyles: false
   })],
-  site: 'https://antarrarquitectos.com',
+  site: 'https://www.antarrarquitectos.com',
+  trailingSlash: 'never',
   build: {
     inlineStylesheets: 'auto'
   },

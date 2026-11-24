@@ -4,43 +4,36 @@ import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 import { SERVICES, GENERAL_SERVICE_FAQS } from '../../data/services';
 
-const canonicalUrl = 'https://antarrarquitectos.com/servicios';
-const pageTitle = 'Servicios de Arquitectura y Diseño en Chiclayo | Antarr Arquitectos';
+const SITE_URL = 'https://www.antarrarquitectos.com';
+const canonicalUrl = `${SITE_URL}/servicios`;
+const pageTitle = 'Servicios de Arquitectura y Diseño de Interiores | Antarr Arquitectos';
 const pageDescription =
-  'Servicios de diseño residencial, multifamiliar, comercial y diseño de interiores en Chiclayo y la Costa Norte del Perú. Planos ejecutivos, 3D y asesoría.';
+  'Estudio de arquitectura y diseño de interiores en Chiclayo y todo el Perú. Arquitectos para casas, edificios multifamiliares, locales comerciales y 3D.';
 
 const catalogSchema = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'ProfessionalService',
-      '@id': 'https://antarrarquitectos.com/#organization',
-      name: 'Antarr Arquitectos',
-      url: 'https://antarrarquitectos.com',
-      telephone: '+51926542501',
-      email: 'info@antarrarquitectos.com',
-      image: 'https://antarrarquitectos.com/assets/logo-antarr-dark.png',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Chiclayo',
-        addressRegion: 'Lambayeque',
-        addressCountry: 'PE'
-      },
-      areaServed: [
-        { '@type': 'City', name: 'Chiclayo' },
-        { '@type': 'AdministrativeArea', name: 'Lambayeque' },
-        { '@type': 'Place', name: 'Costa Norte, Perú' }
-      ],
-      hasOfferCatalog: {
+      '@type': 'CollectionPage',
+      '@id': `${canonicalUrl}#webpage`,
+      url: canonicalUrl,
+      name: pageTitle,
+      description: pageDescription,
+      inLanguage: 'es-PE',
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+      about: { '@id': `${SITE_URL}/#organization` },
+      mainEntity: {
         '@type': 'OfferCatalog',
-        name: 'Servicios de Arquitectura y Diseño en Chiclayo',
+        name: 'Servicios de Arquitectura y Diseño de Interiores',
         itemListElement: SERVICES.map((service) => ({
           '@type': 'Offer',
           itemOffered: {
             '@type': 'Service',
-            name: `${service.title} en Chiclayo`,
+            name: `${service.title} en Chiclayo y Perú`,
+            serviceType: service.title,
             description: service.seoDescription,
-            url: `https://antarrarquitectos.com/servicios/${service.slug}`
+            url: `${SITE_URL}/servicios/${service.slug}`,
+            provider: { '@id': `${SITE_URL}/#organization` }
           }
         }))
       }
@@ -63,13 +56,13 @@ const catalogSchema = {
           '@type': 'ListItem',
           position: 1,
           name: 'Inicio',
-          item: 'https://antarrarquitectos.com/'
+          item: `${SITE_URL}/`
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Servicios',
-          item: 'https://antarrarquitectos.com/servicios'
+          item: canonicalUrl
         }
       ]
     }
@@ -84,7 +77,7 @@ const catalogSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(catalogSchema)} />
 
-  <div id="top" class="min-h-screen flex flex-col justify-between bg-transparent">
+  <div class="min-h-screen flex flex-col justify-between bg-transparent">
     <Navbar />
 
     <main class="flex-grow pt-28 sm:pt-32 pb-20 sm:pb-28 relative overflow-hidden">
@@ -99,7 +92,7 @@ const catalogSchema = {
           </div>
 
           <h1 class="font-display text-3xl sm:text-5xl md:text-[3.25rem] font-light text-[#1C1917] leading-[1.15] tracking-tight">
-            Acompañamos tu proyecto con <span class="font-serif italic font-normal text-[#8C5230]">criterio espacial y precisión técnica.</span>
+            Servicios de <span class="font-serif italic font-normal text-[#8C5230]">arquitectura y diseño de interiores</span> a medida.
           </h1>
 
           <div class="flex items-center justify-center gap-3 py-1">
