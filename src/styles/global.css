@@ -19,7 +19,7 @@
 
   body {
     background-color: #F6F3EE;
-    background-image: url('/assets/textura-piedra.jpg');
+    background-image: url('/assets/textura-piedra.webp');
     background-repeat: repeat;
     background-size: 380px auto;
     background-position: left top;
@@ -108,7 +108,7 @@ html.lenis, html.lenis body {
 .btn-primary,
 .peer:checked ~ .btn-terracota-chip {
   background-color: #864728;
-  background-image: url('/assets/terracota.jpg');
+  background-image: url('/assets/terracota.webp');
   background-size: 380px auto;
   background-repeat: repeat;
   background-position: center center;

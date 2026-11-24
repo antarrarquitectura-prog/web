@@ -153,6 +153,19 @@ const globalSchema = {
       "publisher": {
         "@id": `${SITE_URL}/#organization`
       }
+    },
+    {
+      "@type": "ItemList",
+      "@id": `${SITE_URL}/#navigation`,
+      "name": "Navegación Principal de Antarr Arquitectos",
+      "itemListElement": [
+        { "@type": "SiteNavigationElement", "position": 1, "name": "Servicios de Arquitectura", "url": `${SITE_URL}/servicios` },
+        { "@type": "SiteNavigationElement", "position": 2, "name": "Diseño Residencial", "url": `${SITE_URL}/servicios/diseno-residencial` },
+        { "@type": "SiteNavigationElement", "position": 3, "name": "Diseño Multifamiliar", "url": `${SITE_URL}/servicios/diseno-multifamiliar` },
+        { "@type": "SiteNavigationElement", "position": 4, "name": "Diseño Comercial", "url": `${SITE_URL}/servicios/diseno-comercial` },
+        { "@type": "SiteNavigationElement", "position": 5, "name": "Diseño de Interiores", "url": `${SITE_URL}/servicios/diseno-de-interiores` },
+        { "@type": "SiteNavigationElement", "position": 6, "name": "Portafolio de Proyectos", "url": `${SITE_URL}/proyectos` }
+      ]
     }
   ]
 };
@@ -163,7 +176,10 @@ const globalSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#F6F3EE" />
     <meta name="generator" content={Astro.generator} />
     
@@ -176,7 +192,10 @@ const globalSchema = {
     <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
 
     {preloadHero && (
-      <link rel="preload" as="image" href="/assets/hero-valencia-poster.jpg" media="(max-width: 767px)" fetchpriority="high" />
+      <>
+        <link rel="preload" as="image" type="image/webp" href="/assets/hero-valencia-poster-mobile.webp" media="(max-width: 767px)" fetchpriority="high" />
+        <link rel="preload" as="image" type="image/webp" href="/assets/hero-valencia-poster.webp" media="(min-width: 768px)" fetchpriority="high" />
+      </>
     )}
     
     <!-- OpenGraph / Social Facebook & WhatsApp -->
@@ -196,18 +215,31 @@ const globalSchema = {
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
 
-    <!-- Google Fonts: Plus Jakarta Sans + Space Grotesk + Inter (Optimizadas para FCP) -->
+    <!-- Google Fonts: Carga no bloqueante para acelerar FCP y LCP -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link 
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" 
-      rel="stylesheet" 
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
     <!-- Schema.org ArchitecturalFirm, LocalBusiness & WebSite Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(globalSchema)} />
   </head>
-  <body class="text-carbon selection:bg-clay selection:text-base antialiased overflow-x-hidden relative" style="background-color: #F6F3EE; background-image: url('/assets/textura-piedra.jpg'); background-repeat: repeat; background-size: 380px auto; background-position: left top; background-attachment: fixed;">
+  <body class="text-carbon selection:bg-clay selection:text-base antialiased overflow-x-hidden relative" style="background-color: #F6F3EE; background-image: url('/assets/textura-piedra.webp'); background-repeat: repeat; background-size: 380px auto; background-position: left top; background-attachment: fixed;">
     <!-- Matiz editorial sutil de 15% para calibrar contraste y legibilidad -->
     <div class="fixed inset-0 bg-[#FAF8F5]/15 pointer-events-none z-0" aria-hidden="true"></div>
     

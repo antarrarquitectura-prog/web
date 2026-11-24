@@ -7,8 +7,11 @@
     <!-- Brand Logo: Official Studio Logo -->
     <a href="/" class="group flex items-center gap-3 focus:outline-none py-1">
       <img 
-        src="/assets/logo-antarr-dark.png" 
+        src="/assets/logo-antarr-dark.webp" 
         alt="Antarr Arquitectos" 
+        width="39"
+        height="48"
+        decoding="async"
         class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105" 
       />
       <div class="hidden sm:flex flex-col">
@@ -22,7 +25,7 @@
     </a>
 
     <!-- Desktop Navigation Links: 1. Filosofía | 2. Servicios | 3. Proyectos | 4. Metodología | 5. Contacto -->
-    <nav class="hidden md:flex items-center space-x-6 lg:space-x-8">
+    <nav aria-label="Navegación principal" class="hidden md:flex items-center space-x-6 lg:space-x-8">
       <a href="/#filosofia" class="navbar-link font-tech text-xs md:text-sm tracking-wider uppercase">
         Filosofía
       </a>
@@ -56,6 +59,8 @@
       type="button" 
       class="md:hidden p-2 text-[#1F1A14] focus:outline-none"
       aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -100,7 +105,7 @@
   .navbar-travertino-lintel {
     position: fixed;
     background-color: #E2D8C9;
-    background-image: url('/assets/navbar-travertino.jpg');
+    background-image: url('/assets/navbar-travertino.webp');
     background-size: 850px auto;
     background-repeat: repeat-x;
     background-position: center center;
@@ -111,7 +116,7 @@
   .navbar-travertino-mobile {
     position: relative;
     background-color: #E2D8C9;
-    background-image: url('/assets/navbar-travertino.jpg');
+    background-image: url('/assets/navbar-travertino.webp');
     background-size: 850px auto;
     background-repeat: repeat-x;
     background-position: center center;
@@ -136,12 +141,14 @@
   const links = document.querySelectorAll('.mobile-nav-link');
 
   menuBtn?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('hidden');
+    const isHidden = mobileMenu?.classList.toggle('hidden');
+    menuBtn.setAttribute('aria-expanded', String(!isHidden));
   });
 
   links.forEach(link => {
     link.addEventListener('click', () => {
       mobileMenu?.classList.add('hidden');
+      menuBtn?.setAttribute('aria-expanded', 'false');
     });
   });
 </script>

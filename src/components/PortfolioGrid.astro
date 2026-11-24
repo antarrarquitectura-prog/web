@@ -34,8 +34,10 @@ const getMarbleStyle = (index: number) => {
         <!-- Halo radial difuso de luz cálida ámbar 2700K sobre el muro de estuco -->
         <div class="sconce-aura" aria-hidden="true"></div>
         <img 
-          src="/assets/lampara-izquierda.png" 
+          src="/assets/lampara-izquierda.webp" 
           alt="" 
+          width="121"
+          height="165"
           class="sconce-editorial object-contain block relative z-10"
           style="height: 165px; width: auto;"
           loading="lazy"
@@ -66,8 +68,10 @@ const getMarbleStyle = (index: number) => {
         <!-- Halo radial difuso de luz cálida ámbar 2700K sobre el muro de estuco -->
         <div class="sconce-aura" aria-hidden="true"></div>
         <img 
-          src="/assets/lampara-derecha.png" 
+          src="/assets/lampara-derecha.webp" 
           alt="" 
+          width="161"
+          height="165"
           class="sconce-editorial object-contain block relative z-10"
           style="height: 165px; width: auto;"
           loading="lazy"
@@ -126,7 +130,7 @@ const getMarbleStyle = (index: number) => {
                 <img 
                   src={imgSrc} 
                   alt={`${project.typology || project.category} - ${project.title} en ${project.location} | Antarr Arquitectos - Vista ${imgIdx + 1}`}
-                  loading={cardIndex < 2 && imgIdx === 0 ? "eager" : "lazy"}
+                  loading="lazy"
                   decoding="async"
                   width="800"
                   height="1000"
@@ -207,7 +211,7 @@ const getMarbleStyle = (index: number) => {
   .project-info-plaque {
     flex: 1 1 auto;
     width: 100%;
-    background-image: url('/assets/marmol-placa.jpg');
+    background-image: url('/assets/marmol-placa.webp');
     background-color: #D9DCDD;
     background-size: 550px auto;
     background-repeat: repeat;

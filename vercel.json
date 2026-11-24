@@ -38,6 +38,26 @@
       "permanent": true
     },
     {
+      "source": "/proyectos/dise%C3%B1o-de-interiores",
+      "destination": "/proyectos#interiores",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/comercial/tienda-trend",
+      "destination": "/proyectos#comercial",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/dise%C3%B1o-de-interiores/cocina-comedor",
+      "destination": "/proyectos/int-cocina-comedor",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/diseno-de-interiores/cocina-comedor",
+      "destination": "/proyectos/int-cocina-comedor",
+      "permanent": true
+    },
+    {
       "source": "/proyectos/residencial/:slug",
       "destination": "/proyectos/:slug",
       "permanent": true
@@ -55,6 +75,11 @@
     {
       "source": "/proyectos/diseno-de-interiores/:slug",
       "destination": "/proyectos/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/proyectos/dise%C3%B1o-de-interiores/:slug",
+      "destination": "/proyectos#interiores",
       "permanent": true
     }
   ],
