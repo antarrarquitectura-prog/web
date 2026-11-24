@@ -466,21 +466,27 @@ const getMarbleStyle = (index: number) => {
       const targetTab = btn.getAttribute('data-tab');
       if (!targetTab) return;
       activateTab(targetTab, false);
-      history.pushState(null, '', `#${targetTab}`);
+      const nextUrl = `${window.location.pathname}?categoria=${targetTab}`;
+      history.pushState(null, '', nextUrl);
     });
   });
 
-  // Handle initial page load with hash
-  const initialHash = window.location.hash.toLowerCase();
-  const validTabs = ['#residencial', '#comercial', '#interiores'];
-  if (initialHash && validTabs.includes(initialHash)) {
+  // Handle initial page load with ?categoria= query param or #hash
+  const validTabKeys = ['residencial', 'comercial', 'interiores'];
+  const urlParams = new URLSearchParams(window.location.search);
+  const queryCategory = (urlParams.get('categoria') || '').trim().toLowerCase();
+  const initialHash = window.location.hash.replace('#', '').trim().toLowerCase();
+
+  if (queryCategory && validTabKeys.includes(queryCategory)) {
+    activateTab(queryCategory, false);
+  } else if (initialHash && validTabKeys.includes(initialHash)) {
     activateTab(initialHash, true);
   }
 
   // Handle hash changes (e.g. clicking footer links while already on /proyectos)
   window.addEventListener('hashchange', () => {
-    const newHash = window.location.hash.toLowerCase();
-    if (newHash && validTabs.includes(newHash)) {
+    const newHash = window.location.hash.replace('#', '').trim().toLowerCase();
+    if (newHash && validTabKeys.includes(newHash)) {
       activateTab(newHash, true);
     }
   });

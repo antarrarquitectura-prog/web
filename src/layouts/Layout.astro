@@ -285,13 +285,15 @@ const globalSchema = {
           const hash = href.startsWith('/#') ? href.slice(1) : href;
           if (hash && hash !== '#' && hash.startsWith('#')) {
             if (isHome) {
-              const target = document.querySelector(hash) as HTMLElement | null;
+              const cleanHash = hash.split('?')[0];
+              const target = cleanHash ? (document.querySelector(cleanHash) as HTMLElement | null) : null;
               if (target) {
                 e.preventDefault();
                 // Cálculo matemático exacto: posición absoluta del elemento menos 80px del navbar
                 const targetY = target.getBoundingClientRect().top + window.scrollY - 80;
                 lenis.scrollTo(targetY, { duration: 1.1 });
                 history.pushState(null, '', hash);
+                window.dispatchEvent(new HashChangeEvent('hashchange'));
               }
             }
           }

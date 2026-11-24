@@ -88,10 +88,10 @@ const PILLARS = [
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-6xl mx-auto w-full items-stretch text-left">
       {PILLARS.map((pillar) => (
         <article
-          class="travertino-placa relative overflow-hidden group flex flex-col justify-between p-6 lg:p-7 rounded-sm border border-stone-300/80 shadow-[0_6px_24px_rgba(28,25,23,0.06)] transition-all duration-300 hover:-translate-y-1"
+          class="travertino-placa relative overflow-hidden group flex flex-col justify-between p-7 lg:p-9 rounded-sm border border-stone-300/80 shadow-[0_6px_24px_rgba(28,25,23,0.06)] transition-all duration-300 hover:-translate-y-1"
         >
-          <div class="relative z-10 space-y-3">
-            <div class="flex items-center justify-between border-b border-[#3C2D20]/15 pb-2.5">
+          <div class="relative z-10 space-y-3.5">
+            <div class="flex items-center justify-between border-b border-[#3C2D20]/15 pb-3">
               <span class="font-display text-3xl font-light text-[#8C5230] select-none">
                 {pillar.number}
               </span>
@@ -101,29 +101,13 @@ const PILLARS = [
               {pillar.titleLine1} {pillar.titleLine2}
             </h3>
 
-            <p class="font-sans text-sm leading-relaxed text-[#2C2825] font-normal">
+            <p class="font-sans text-[15px] leading-relaxed text-[#292524] font-normal">
               {pillar.description}
             </p>
           </div>
         </article>
       ))}
     </div>
-
-    <!-- Accesos Directos a Especialidades del Estudio (Enlazado Interno SEO) -->
-    <nav aria-label="Especialidades de arquitectura y diseño de interiores" class="mt-6 lg:mt-8 max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-      <a href="/servicios/diseno-residencial" class="px-3.5 py-1.5 rounded-[2px] bg-[#EAE3D8]/85 hover:bg-[#1E1914] text-[#2C2825] hover:text-[#FAF6F0] border border-[#3C2D20]/15 font-tech text-[11px] tracking-wider uppercase font-semibold transition-colors">
-        Diseño Residencial &rarr;
-      </a>
-      <a href="/servicios/diseno-multifamiliar" class="px-3.5 py-1.5 rounded-[2px] bg-[#EAE3D8]/85 hover:bg-[#1E1914] text-[#2C2825] hover:text-[#FAF6F0] border border-[#3C2D20]/15 font-tech text-[11px] tracking-wider uppercase font-semibold transition-colors">
-        Diseño Multifamiliar &rarr;
-      </a>
-      <a href="/servicios/diseno-comercial" class="px-3.5 py-1.5 rounded-[2px] bg-[#EAE3D8]/85 hover:bg-[#1E1914] text-[#2C2825] hover:text-[#FAF6F0] border border-[#3C2D20]/15 font-tech text-[11px] tracking-wider uppercase font-semibold transition-colors">
-        Arquitectura Comercial &rarr;
-      </a>
-      <a href="/servicios/diseno-de-interiores" class="px-3.5 py-1.5 rounded-[2px] bg-[#EAE3D8]/85 hover:bg-[#1E1914] text-[#2C2825] hover:text-[#FAF6F0] border border-[#3C2D20]/15 font-tech text-[11px] tracking-wider uppercase font-semibold transition-colors">
-        Diseño de Interiores &rarr;
-      </a>
-    </nav>
 
   </div>
 </section>

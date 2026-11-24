@@ -207,8 +207,8 @@ export const SERVICES: Service[] = [
     seoTitle: 'Arquitectura y Diseño Comercial en Perú | Antarr Arquitectos',
     seoDescription:
       'Arquitectos especialistas en diseño comercial y retail en Chiclayo y Perú: restaurantes, spas, clínicas y tiendas con identidad de marca y alto retorno.',
-    h1Prefix: 'Arquitectura y diseño',
-    h1Accent: 'comercial',
+    h1Prefix: 'Arquitectura y',
+    h1Accent: 'diseño comercial',
     h1Suffix: 'que posiciona tu marca.',
     excerpt:
       'Espacios comerciales de distintos rubros concebidos para atraer clientes, ordenar el flujo de atención y destacar tu marca.',

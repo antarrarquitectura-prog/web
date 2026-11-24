@@ -110,6 +110,14 @@ const waQuery = encodeURIComponent(
 );
 const waLink = `https://wa.me/51926542501?text=${waQuery}`;
 const formTargetUrl = `/?servicio=${service.slug}#contacto`;
+
+const projectsCategoryParam =
+  service.slug === 'diseno-comercial'
+    ? 'comercial'
+    : service.slug === 'diseno-de-interiores'
+      ? 'interiores'
+      : 'residencial';
+const projectsFilterUrl = `/proyectos?categoria=${projectsCategoryParam}`;
 ---
 
 <Layout
@@ -136,7 +144,7 @@ const formTargetUrl = `/?servicio=${service.slug}#contacto`;
               </span>
             </div>
 
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-display font-light text-carbon tracking-tight leading-[1.12]">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-display font-light text-[#1C1917] tracking-tight leading-[1.12]">
               {service.h1Prefix}{' '}
               <span class="font-serif italic font-normal text-[#8C5230] mr-1.5">{service.h1Accent}</span>{' '}
               {service.h1Suffix}
@@ -216,10 +224,10 @@ const formTargetUrl = `/?servicio=${service.slug}#contacto`;
                   <span class="font-mono text-xs text-[#8C5230] font-bold block">
                     0{idx + 1} &mdash; ENTREGABLE
                   </span>
-                  <h3 class="font-display text-base sm:text-lg text-[#1C1917] font-medium leading-snug">
+                  <h3 class="font-display text-[16px] sm:text-lg text-[#1C1917] font-medium leading-snug">
                     {item.title}
                   </h3>
-                  <p class="font-sans text-xs sm:text-[13px] leading-relaxed text-[#2C2825]">
+                  <p class="font-sans text-xs sm:text-[13px] leading-relaxed text-[#44403C]">
                     {item.detail}
                   </p>
                 </div>
@@ -286,7 +294,7 @@ const formTargetUrl = `/?servicio=${service.slug}#contacto`;
                 <span class="block font-mono text-xs tracking-[0.16em] font-medium text-[#8C5230] mb-2">
                   0{idx + 1}
                 </span>
-                <h3 class="font-display text-base lg:text-lg font-medium text-[#1C1917] leading-snug mb-2.5">
+                <h3 class="font-display text-[16px] lg:text-lg font-medium text-[#1C1917] leading-snug mb-2.5">
                   {target.title}
                 </h3>
                 <p class="font-sans text-sm text-[#44403C] leading-relaxed">
@@ -310,10 +318,10 @@ const formTargetUrl = `/?servicio=${service.slug}#contacto`;
             </div>
 
             <a
-              href="/proyectos"
+              href={projectsFilterUrl}
               class="inline-flex items-center gap-2 font-tech text-xs tracking-widest uppercase font-bold text-[#8C5230] hover:underline"
             >
-              <span>Ver Archivo Completo</span>
+              <span>Ver todos los proyectos</span>
               <span>&rarr;</span>
             </a>
           </div>
@@ -376,7 +384,7 @@ const formTargetUrl = `/?servicio=${service.slug}#contacto`;
                 class="group rounded-[3px] bg-[#EAE3D8]/90 border-t border-white border-b border-[#3C2D20]/20 shadow-sm"
                 open={idx === 0}
               >
-                <summary class="flex items-center justify-between gap-4 px-5 sm:px-6 py-4 cursor-pointer list-none font-display text-base sm:text-lg text-carbon font-medium select-none">
+                <summary class="flex items-center justify-between gap-4 px-5 sm:px-6 py-4 cursor-pointer list-none font-display text-[16px] sm:text-lg text-[#1C1917] font-medium select-none">
                   <span>{faq.question}</span>
                   <span class="text-[#8C5230] font-mono text-xl leading-none transition-transform duration-200 group-open:rotate-45 shrink-0">
                     +
