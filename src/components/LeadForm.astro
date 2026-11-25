@@ -136,11 +136,11 @@ const LABEL_CLASS = 'block font-tech text-[10px] tracking-widest uppercase text-
           method="POST" 
           class="space-y-3.5"
         >
-          <!-- Web3Forms configuration targeting info@antarrarquitectos.com -->
-          <input type="hidden" name="access_key" value="8f121d51-64d6-4447-9755-bb95d38f830c" />
-          <input type="hidden" name="subject" value="Nueva Consulta de Proyecto - Antarr Arquitectos" />
+          <!-- Web3Forms configuration linked to info@antarrarquitectos.com -->
+          <input type="hidden" name="access_key" value="9983cf62-da4f-40e2-93ab-c27727776199" />
+          <input type="hidden" name="subject" value="Nueva consulta de proyecto — Antarr Arquitectos" />
           <input type="hidden" name="from_name" value="Web Antarr Arquitectos" />
-          <input type="hidden" name="recipient" value="info@antarrarquitectos.com" />
+          <input type="checkbox" name="botcheck" class="hidden" style="display: none;" tabindex="-1" autocomplete="off" />
 
           <!-- Row 1: Nombre y Teléfono -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -640,43 +640,69 @@ const LABEL_CLASS = 'block font-tech text-[10px] tracking-widest uppercase text-
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<span>Procesando solicitud...</span>`;
 
-    const formData = new FormData(form);
+    const name = (form.querySelector('[name="name"]') as HTMLInputElement)?.value.trim() || '';
+    const phone = (form.querySelector('[name="phone"]') as HTMLInputElement)?.value.trim() || '';
+    const email = (form.querySelector('[name="email"]') as HTMLInputElement)?.value.trim() || '';
+    const location = (form.querySelector('[name="project_location"]') as HTMLInputElement)?.value.trim() || '';
+    const projType = (form.querySelector('[name="project_type"]:checked') as HTMLInputElement)?.value || 'Residencial';
+    const message = (form.querySelector('[name="message"]') as HTMLTextAreaElement)?.value.trim() || '';
+
+    const activeGroup = form.querySelector<HTMLElement>(`[data-typology-group="${projType}"]`);
+    const dynamicFields: Record<string, string> = {};
+    const dynamicLines: string[] = [];
+
+    activeGroup?.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach((el) => {
+      if (el.disabled) return;
+      const label = el.getAttribute('data-label') || el.name;
+      const val = el.value?.trim() || '';
+      dynamicFields[label] = val || 'No especificado';
+      if (val) dynamicLines.push(`• ${label}: ${val}`);
+    });
+
+    const payload: Record<string, string | boolean> = {
+      access_key: '9983cf62-da4f-40e2-93ab-c27727776199',
+      subject: `Nueva consulta de proyecto (${projType}) — Antarr Arquitectos`,
+      from_name: 'Web Antarr Arquitectos',
+      replyto: email,
+      botcheck: false,
+      'Nombre y Apellidos': name,
+      'Teléfono / WhatsApp': phone,
+      'Correo Electrónico': email,
+      'Ubicación del Terreno o Inmueble': location,
+      'Tipología de Proyecto': projType,
+      ...dynamicFields,
+      'Detalles o Requerimientos Específicos': message || 'Sin detalles adicionales',
+    };
 
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
 
-      if (result.success) {
-        feedback.className = "mt-2 p-2.5 rounded-[2px] text-center font-sans text-xs bg-olive/20 text-carbon border border-olive/30 font-medium block";
-        feedback.textContent = "¡Solicitud recibida con éxito! Nuestro equipo de arquitectura se pondrá en contacto contigo en breve.";
+      if (response.ok && result.success === true) {
+        feedback.className = "mt-3 p-3.5 rounded-[2px] text-center font-sans text-xs bg-[#E8EFE9] text-[#1C1917] border border-olive/40 font-medium block shadow-sm";
+        feedback.innerHTML = `
+          <span class="block font-tech text-[11px] tracking-widest uppercase text-olive-dark font-bold mb-1">✓ Consulta enviada correctamente</span>
+          <span>Hemos recibido tu solicitud para <strong>${projType}</strong>. Nuestro equipo directivo te responderá a la brevedad.</span>
+        `;
         form.reset();
         syncTypologyFields('Residencial');
       } else {
-        throw new Error(result.message || "Error al procesar el formulario.");
+        throw new Error(result.message || 'Error al procesar el formulario.');
       }
-    } catch (err: any) {
-      const name = (form.querySelector('[name="name"]') as HTMLInputElement)?.value || '';
-      const phone = (form.querySelector('[name="phone"]') as HTMLInputElement)?.value || '';
-      const projType = (form.querySelector('[name="project_type"]:checked') as HTMLInputElement)?.value || 'Residencial';
-      const location = (form.querySelector('[name="project_location"]') as HTMLInputElement)?.value || '';
-      const message = (form.querySelector('[name="message"]') as HTMLTextAreaElement)?.value || '';
-
-      const activeGroup = form.querySelector<HTMLElement>(`[data-typology-group="${projType}"]`);
-      const dynamicLines: string[] = [];
-      activeGroup?.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach((el) => {
-        const label = el.getAttribute('data-label') || el.name;
-        const val = el.value?.trim();
-        if (val) dynamicLines.push(`• ${label}: ${val}`);
-      });
-
+    } catch {
       const waMsg = encodeURIComponent(
         [
           'Hola Antarr Arquitectos, envío mi solicitud de diagnóstico:',
           `• Nombre: ${name}`,
           `• Teléfono: ${phone}`,
+          `• Correo: ${email}`,
           `• Tipo: ${projType}`,
           `• Ubicación: ${location}`,
           ...dynamicLines,
