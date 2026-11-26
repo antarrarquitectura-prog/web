@@ -54,16 +54,16 @@ const globalSchema = {
       ],
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Carretera a Pimentel Km 6.2",
-        "addressLocality": "Pimentel, Chiclayo",
+        "streetAddress": "Lora y Cordero 855",
+        "addressLocality": "Chiclayo",
         "addressRegion": "Lambayeque",
         "postalCode": "14001",
         "addressCountry": "PE"
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": -6.7985,
-        "longitude": -79.8862
+        "latitude": -6.7714,
+        "longitude": -79.8409
       },
       "openingHoursSpecification": [
         {
@@ -141,7 +141,49 @@ const globalSchema = {
           }
         ]
       },
+      "founder": {
+        "@id": `${SITE_URL}/#founder`
+      },
+      "ceo": {
+        "@id": `${SITE_URL}/#founder`
+      },
       "priceRange": "$$$"
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#founder`,
+      "name": "Arq. Edgardo Rojas",
+      "alternateName": [
+        "Edgardo Rojas",
+        "Eder Edgardo Rojas Cocha",
+        "Arq. Eder Rojas"
+      ],
+      "jobTitle": "Fundador y CEO de Antarr Arquitectos",
+      "description": "Arq. Edgardo Rojas (Eder Edgardo Rojas Cocha), Fundador y CEO de Antarr Arquitectos, estudio de arquitectura y diseño de interiores en Chiclayo, Perú.",
+      "image": `${SITE_URL}/images/arq-edgardo-rojas-fundador-ceo-antarr-arquitectos.webp`,
+      "url": `${SITE_URL}/#nosotros`,
+      "sameAs": [
+        "https://www.linkedin.com/company/antarr-estudio-arquitect%C3%B3nico/",
+        "https://www.instagram.com/antarr_arquitectos/"
+      ],
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "Universidad Católica Santo Toribio de Mogrovejo (USAT)"
+      },
+      "worksFor": {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        "name": "Antarr Arquitectos",
+        "url": SITE_URL
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Lora y Cordero 855",
+        "addressLocality": "Chiclayo",
+        "addressRegion": "Lambayeque",
+        "postalCode": "14001",
+        "addressCountry": "PE"
+      }
     },
     {
       "@type": "WebSite",
@@ -185,6 +227,7 @@ const globalSchema = {
     
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content="Antarr Arquitectos, estudio de arquitectura, arquitectos en Chiclayo, arquitectura Perú, diseño de interiores, diseño residencial, diseño comercial, Arq. Edgardo Rojas Fundador y CEO de Antarr Arquitectos, Edgardo Rojas Antarr Arquitectos, Eder Edgardo Rojas Cocha, Arq. Edgardo Rojas" />
     <meta name="robots" content={robots} />
     
     <link rel="canonical" href={canonicalUrl} />

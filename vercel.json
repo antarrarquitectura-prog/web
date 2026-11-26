@@ -9,7 +9,7 @@
     },
     {
       "source": "/nosotros",
-      "destination": "/#filosofia",
+      "destination": "/#nosotros",
       "permanent": true
     },
     {
